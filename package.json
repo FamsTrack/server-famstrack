@@ -1,0 +1,49 @@
+{
+  "name": "server-famstrack",
+  "version": "1.0.0",
+  "description": "server famstrack",
+  "main": "index.js",
+  "scripts": {
+    "db:create": "npx sequelize db:create",
+    "db:migrate": "npx sequelize db:migrate",
+    "db:migrate:undo": "npx sequelize db:migrate:undo:all",
+    "db:seed": "npx sequelize db:seed:all",
+    "db:create:development": "SET NODE_ENV=development&npm run db:create",
+    "db:migrate:development": "SET NODE_ENV=development&npm run db:migrate",
+    "db:migrate:undo:development": "SET NODE_ENV=development&npm run db:migrate:undo",
+    "db:seed:development": "SET NODE_ENV=development&npm run db:seed",
+    "db:create:test": "SET NODE_ENV=test&npm run db:create",
+    "db:migrate:test": "SET NODE_ENV=test&npm run db:migrate",
+    "db:migrate:undo:test": "SET NODE_ENV=test&npm run db:migrate:undo",
+    "db:seed:test": "SET NODE_ENV=test&npm run db:seed",
+    "start": "node ./bin/http.js",
+    "dev": "SET NODE_ENV=development&nodemon ./bin/http.js",
+    "test": "SET NODE_ENV=test&npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FamsTrack/server-famstrack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FamsTrack/server-famstrack/issues"
+  },
+  "homepage": "https://github.com/FamsTrack/server-famstrack#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.5.1",
+    "sequelize": "^6.5.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0",
+    "supertest": "^6.1.3"
+  }
+}
