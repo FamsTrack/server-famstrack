@@ -181,15 +181,16 @@ describe('GET /groups success', () => {
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
-        console.log('<<<<<<<<<<<<HEYYYY>>>>>>>', body);
+        // console.log('<<<<<<<<<<<<HEYYYY>>>>>>>', body);
         expect(statusCode).toEqual(200)
         expect(Array.isArray(body)).toEqual(true);
         expect(body).toEqual(
-          expect.arrayContaining([{
-            
-            name: 'FamTravel',
-            year: 2021
-          }])
+          expect.arrayContaining([
+            expect.objectContaining({
+              name: 'FamTravel',
+              year: 2021
+            })
+          ])
         )
         done()
       })
@@ -198,23 +199,24 @@ describe('GET /groups success', () => {
 })
 
 describe('GET /groups fail', () => {
-  test('GET groups fail no token send response 401 status code', (done) => {
+  test('GET groups fail no token send response 500 status code', (done) => {
     request(app)
       .get('/groups')
       .then(response => {
         const { body, statusCode } = response
 
-        expect(statusCode).toEqual(401);
+        expect(statusCode).toEqual(500);
         expect(typeof body).toEqual('object');
-        expect(body).toHaveProperty('errors', 'unauthorize action!');
-        done()
+        expect(body).toHaveProperty('errors');
+        expect(typeof body.errors).toEqual('string');
+        expect(body.errors).toEqual('jwt must be provided');
       })
       .catch(err => done(err))
   })
 
   test('GET groups fail send token but not admin send response 401 status code', (done) => {
     request(app)
-      .get('groups')
+      .get('/groups')
       .set('access_token', tokenFamily)
       .then(response => {
         const { body, statusCode } = response
