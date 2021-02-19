@@ -26,7 +26,7 @@ beforeAll((done) => {
     .post('/login')
     .send(family)
 
-  tokenFamily = familys.body.access_token;
+  tokenCustomer = familys.body.access_token;
 
   done();
 })
