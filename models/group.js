@@ -10,12 +10,26 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // define association her
     }
   };
   Group.init({
-    name: DataTypes.STRING,
-    year: DataTypes.INTEGER
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field name is required'
+        }
+      }
+    },
+    year: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          msg: 'field year is required'
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Group',
