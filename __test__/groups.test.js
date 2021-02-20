@@ -1,12 +1,11 @@
 const request = require('supertest');
-const { response } = require('../app');
 const app = require('../app')
 const { sequelize } = require('../models')
 const clearGroup = require('./helpers/clear-groups')
 
 let tokenAdmin, tokenFamily, groupId;
 
-beforeAll(async (done) => {
+beforeAll(async(done) => {
   const admin = {
     email: 'admin@famtrack.com',
     password: 'qwerty'
@@ -29,7 +28,6 @@ beforeAll(async (done) => {
 
   tokenFamily = familys.body.access_token;
 
-  console.log(tokenAdmin)
   done();
 })
 
@@ -76,7 +74,7 @@ describe('POST /groups fail', () => {
       .post('/groups')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  year: ''})
+      .send({ name: '', year: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -98,7 +96,7 @@ describe('POST /groups fail', () => {
       .post('/groups')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  year: 2021})
+      .send({ name: '', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -119,7 +117,7 @@ describe('POST /groups fail', () => {
       .post('/groups')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: 'FamTravel',  year: ''})
+      .send({ name: 'FamTravel', year: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -139,7 +137,7 @@ describe('POST /groups fail', () => {
     request(app)
       .post('/groups')
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -156,10 +154,10 @@ describe('POST /groups fail', () => {
       .post('/groups')
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel', year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
-        
+
         expect(statusCode).toEqual(401);
         expect(typeof body).toEqual('object');
         expect(body).toHaveProperty('errors', 'unauthorize action!');
@@ -210,6 +208,7 @@ describe('GET /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(typeof body.errors).toEqual('string');
         expect(body.errors).toEqual('jwt must be provided');
+        done();
       })
       .catch(err => done(err))
   })
@@ -263,7 +262,7 @@ describe('PUT /groups fail', () => {
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  year: ''})
+      .send({ name: '', year: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -285,7 +284,7 @@ describe('PUT /groups fail', () => {
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  year: 2021})
+      .send({ name: '', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -306,7 +305,7 @@ describe('PUT /groups fail', () => {
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: 'FamTravel',  year: ''})
+      .send({ name: 'FamTravel', year: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -326,7 +325,7 @@ describe('PUT /groups fail', () => {
     request(app)
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -335,6 +334,7 @@ describe('PUT /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(typeof body.errors).toEqual('string');
         expect(body.errors).toEqual('jwt must be provided');
+        done();
       })
       .catch(err => done(err))
   })
@@ -344,7 +344,7 @@ describe('PUT /groups fail', () => {
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 

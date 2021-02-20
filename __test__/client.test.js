@@ -349,7 +349,7 @@ describe('Client', () => {
         .catch(err => done(err))
     })
 
-    test('store clients fail contact empty should send response 400 status code', (done) => {
+    test('store clients fail birth date empty should send response 400 status code', (done) => {
       const input = {
         name: 'Abdul Aziz',
         img: 'image.jpg',
@@ -426,8 +426,6 @@ describe('Client', () => {
         .send(input)
         .then(response => {
           const { body, statusCode } = response
-
-          clientId = body.id
 
           expect(statusCode).toEqual(200);
           expect(typeof body).toEqual('object');
@@ -623,7 +621,7 @@ describe('Client', () => {
         .catch(err => done(err))
     })
 
-    test('update clients fail contact empty should send response 400 status code', (done) => {
+    test('update clients fail birth date empty should send response 400 status code', (done) => {
       const input = {
         name: 'Abdul Aziz',
         img: 'image.jpg',
