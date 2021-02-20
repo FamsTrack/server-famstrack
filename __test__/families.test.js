@@ -12,8 +12,8 @@ beforeAll((done) => {
 
 afterAll((done) => {
   queryInterface.bulkDelete('Families')
-  .then(() => done())
-  .catch(err => done(err))
+    .then(() => done())
+    .catch(err => done(err))
 })
 
 // ADD
