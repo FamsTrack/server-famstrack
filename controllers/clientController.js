@@ -1,4 +1,4 @@
-const { Client } = require('../models');
+const { Client, Family } = require('../models');
 
 class clientController {
   static async getAll(req, res, next) {
@@ -26,10 +26,13 @@ class clientController {
 
   static async store(req, res, next) {
     try {
-      console.log(req.body);
-      const { name, img, address, gender, contact, birth_date } = req.body;
-      const input = { name, img, address, gender, contact, birth_date };
-      console.log(input);
+      const { name, img, address, gender, contact, birth_date, familiesId } = req.body;
+      const input = { name, img, address, gender, contact, birth_date, familiesId };
+
+      if (familiesId) {
+        const family = await Family.findByPk(familiesId)
+        if (!family) return next({ name: 'notFound' });
+      }
 
       const client = await Client.create(input);
       return res.status(201).json(client);
@@ -42,11 +45,16 @@ class clientController {
   static async update(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, img, address, gender, contact, birth_date } = req.body;
-      const input = { name, img, address, gender, contact, birth_date };
+      const { name, img, address, gender, contact, birth_date, familiesId } = req.body;
+      const input = { name, img, address, gender, contact, birth_date, familiesId };
 
       const client = await Client.findByPk(id);
       if (!client) return next({ name: 'notFound' });
+
+      if (familiesId) {
+        const family = await Family.findByPk(familiesId)
+        if (!family) return next({ name: 'notFound' });
+      }
 
       await client.update(input, { where: { id } });
       await client.reload();

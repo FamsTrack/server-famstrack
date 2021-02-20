@@ -3,33 +3,39 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Client extends Model {
+  class Family extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Client.belongsTo(models.Family, { as: 'family', foreignKey: 'familiesId' })
+      Family.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
+      Family.hasMany(models.Client, { as: 'client', foreignKey: 'familiesId' })
     }
   };
-  Client.init({
+  Family.init({
     name: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: "field name is required"
+          msg: 'field name is required'
         }
       }
     },
-    img: {
-      type: DataTypes.STRING
+    contact: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field contact is required'
+        }
+      }
     },
     address: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: "field address is required"
+          msg: 'field address is required'
         }
       }
     },
@@ -47,33 +53,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    contact: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {
-          msg: "field contact is required"
-        }
-      }
-    },
-    birth_date: {
-      type: DataTypes.DATE,
-      validate: {
-        notEmpty: {
-          msg: "field birth date is required"
-        }
-      }
-    },
-    familiesId: {
+    userId: {
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: {
-          msg: 'field family id is required'
+          msg: 'field user id is required'
         }
       }
     }
   }, {
     sequelize,
-    modelName: 'Client',
+    modelName: 'Family',
   });
-  return Client;
+  return Family;
 };

@@ -3,7 +3,7 @@ const app = require('../app')
 const { sequelize } = require('../models')
 const clearClient = require('./helpers/clear-client')
 
-let tokenAdmin, tokenFamily, clientId;
+let tokenAdmin, tokenFamily, clientId, familiesIdDummy;
 
 describe('Client', () => {
   beforeAll(async(done) => {
@@ -16,6 +16,16 @@ describe('Client', () => {
       email: 'pevitapearce@famtrack.com',
       password: 'qwerty'
     }
+
+    const inputFamilies = {
+      name: 'pevita',
+      address: 'alamat pevita dong',
+      contact: '0822796251',
+      userId: 2,
+      gender: 'wanita'
+    }
+
+
 
     const admins = await request(app)
       .post('/login')
@@ -30,6 +40,13 @@ describe('Client', () => {
 
     tokenFamily = families.body.access_token;
 
+    const familiesPost = await request(app)
+      .post('/families')
+      .set('access_token', tokenAdmin)
+      .send(inputFamilies)
+
+    familiesIdDummy = familiesPost.body.id
+
     done();
   })
 
@@ -43,6 +60,82 @@ describe('Client', () => {
     }
   })
 
+  describe('GET /clients success', () => {
+    test('should send response with 200 status code', (done) => {
+
+      request(app)
+        .get('/clients')
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(200);
+          expect(Array.isArray(body)).toEqual(true);
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
+  describe('GET /clients/:id success', () => {
+    test('should send response with 200 status code', async(done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        familiesId: familiesIdDummy,
+        birth_date: new Date()
+      }
+
+      const storeOne = await request(app)
+        .post('/clients')
+        .set('access_token', tokenAdmin)
+        .send(input)
+
+      const id = storeOne.body.id;
+
+      await request(app)
+        .get(`/clients/${id}`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(200);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('id');
+          expect(typeof body.id).toEqual('number');
+          expect(body).toHaveProperty('name', input.name);
+          expect(body).toHaveProperty('img', input.img);
+          expect(body).toHaveProperty('address', input.address);
+          expect(body).toHaveProperty('gender', input.gender);
+          expect(body).toHaveProperty('contact', input.contact);
+          expect(body).toHaveProperty('birth_date');
+          expect(body).toHaveProperty('familiesId', input.familiesId);
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
+  describe('GET /clients/:id fail', () => {
+    test('not found id should send response with 404 status code', (done) => {
+
+      request(app)
+        .get(`/clients/9999999`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(404);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(typeof body.errors).toEqual('string');
+          expect(body.errors).toEqual('not found!');
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
   describe('POST /clients success', () => {
     test('should send response with 201 status code', (done) => {
       const input = {
@@ -51,6 +144,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -73,6 +167,7 @@ describe('Client', () => {
           expect(body).toHaveProperty('gender', body.gender);
           expect(body).toHaveProperty('contact', body.contact);
           expect(body).toHaveProperty('birth_date', body.birth_date);
+          expect(body).toHaveProperty('familiesId', body.familiesId);
           done();
         }).catch(err => done(err));
     });
@@ -86,6 +181,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -111,6 +207,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -137,6 +234,7 @@ describe('Client', () => {
         address: '',
         gender: '',
         contact: '',
+        familiesId: '',
         birth_date: ''
       }
       request(app)
@@ -156,7 +254,8 @@ describe('Client', () => {
             expect.arrayContaining(['field password is required']),
             expect.arrayContaining(['gender should be one of pria or wanita']),
             expect.arrayContaining(['field contact is required']),
-            expect.arrayContaining(['field birth date is required'])
+            expect.arrayContaining(['field birth date is required']),
+            expect.arrayContaining(['field family id is required'])
           );
           done()
         })
@@ -170,6 +269,7 @@ describe('Client', () => {
         address: '',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -198,6 +298,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: '',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -226,6 +327,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -254,6 +356,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: ''
       }
       request(app)
@@ -274,6 +377,35 @@ describe('Client', () => {
         })
         .catch(err => done(err))
     })
+
+    test('store clients fail family id empty should send response 400 status code', (done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        familiesId: '',
+        birth_date: new Date()
+      }
+      request(app)
+        .post('/clients')
+        .set('access_token', tokenAdmin)
+        .send(input)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(400);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(Array.isArray(body.errors)).toEqual(true);
+          expect(body.errors).toEqual(
+            expect.arrayContaining(['field family id is required'])
+          );
+          done()
+        })
+        .catch(err => done(err))
+    })
   });
 
   describe('PUT /clients success', () => {
@@ -284,6 +416,7 @@ describe('Client', () => {
         address: 'jln. bangauz',
         gender: 'wanita',
         contact: '082279655368',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -306,6 +439,7 @@ describe('Client', () => {
           expect(body).toHaveProperty('gender', body.gender);
           expect(body).toHaveProperty('contact', body.contact);
           expect(body).toHaveProperty('birth_date', body.birth_date);
+          expect(body).toHaveProperty('familiesId', body.familiesId);
           done();
 
         }).catch(err => done(err));
@@ -320,6 +454,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -345,6 +480,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
 
@@ -371,6 +507,7 @@ describe('Client', () => {
         address: '',
         gender: '',
         contact: '',
+        familiesId: '',
         birth_date: ''
       }
       request(app)
@@ -390,7 +527,9 @@ describe('Client', () => {
             expect.arrayContaining(['field password is required']),
             expect.arrayContaining(['gender should be one of pria or wanita']),
             expect.arrayContaining(['field contact is required']),
-            expect.arrayContaining(['field birth date is required'])
+            expect.arrayContaining(['field birth date is required']),
+            expect.arrayContaining(['field family id is required'])
+
           );
           done()
         })
@@ -404,6 +543,7 @@ describe('Client', () => {
         address: '',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -432,6 +572,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: '',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -460,6 +601,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '',
+        familiesId: familiesIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -488,6 +630,7 @@ describe('Client', () => {
         address: 'jln. bangau',
         gender: 'pria',
         contact: '082279655366',
+        familiesId: familiesIdDummy,
         birth_date: ''
       }
       request(app)
@@ -503,6 +646,35 @@ describe('Client', () => {
           expect(Array.isArray(body.errors)).toEqual(true);
           expect(body.errors).toEqual(
             expect.arrayContaining(['field birth date is required'])
+          );
+          done()
+        })
+        .catch(err => done(err))
+    })
+
+    test('update clients fail family id empty should send response 400 status code', (done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        familiesId: '',
+        birth_date: new Date()
+      }
+      request(app)
+        .put(`/clients/${clientId}`)
+        .set('access_token', tokenAdmin)
+        .send(input)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(400);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(Array.isArray(body.errors)).toEqual(true);
+          expect(body.errors).toEqual(
+            expect.arrayContaining(['field family id is required'])
           );
           done()
         })
