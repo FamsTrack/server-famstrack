@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const decodeToken = require('../helpers/decodeToken');
+const decodeToken = require('../helpers/decodedToken');
 
 module.exports = async(req, res, next) => {
   try {

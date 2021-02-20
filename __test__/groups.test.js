@@ -1,5 +1,4 @@
 const request = require('supertest');
-const { response } = require('../app');
 const app = require('../app')
 const { sequelize } = require('../models')
 const clearGroup = require('./helpers/clear-groups')
@@ -210,6 +209,7 @@ describe('GET /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(typeof body.errors).toEqual('string');
         expect(body.errors).toEqual('jwt must be provided');
+        done()
       })
       .catch(err => done(err))
   })
@@ -336,6 +336,7 @@ describe('PUT /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(typeof body.errors).toEqual('string');
         expect(body.errors).toEqual('jwt must be provided');
+        done()
       })
       .catch(err => done(err))
   })

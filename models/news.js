@@ -14,10 +14,33 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   News.init({
-    name: DataTypes.STRING,
-    image: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    active: DataTypes.BOOLEAN
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field name is required'
+        }
+      }
+    },
+    image: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field image is required'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field description is required'
+        }
+      }
+    },
+    active: {
+      type: DataTypes.STRING
+    }
   }, {
     sequelize,
     modelName: 'News',
