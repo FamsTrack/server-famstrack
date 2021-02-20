@@ -43,6 +43,80 @@ describe('Client', () => {
     }
   })
 
+  describe('GET /clients success', () => {
+    test('should send response with 200 status code', (done) => {
+
+      request(app)
+        .get('/clients')
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(200);
+          expect(Array.isArray(body)).toEqual(true);
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
+  describe('GET /clients/:id success', () => {
+    test('should send response with 200 status code', async(done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        birth_date: new Date()
+      }
+
+      const storeOne = await request(app)
+        .post('/clients')
+        .set('access_token', tokenAdmin)
+        .send(input)
+
+      const id = storeOne.body.id;
+
+      await request(app)
+        .get(`/clients/${id}`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(200);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('id');
+          expect(typeof body.id).toEqual('number');
+          expect(body).toHaveProperty('name', input.name);
+          expect(body).toHaveProperty('img', input.img);
+          expect(body).toHaveProperty('address', input.address);
+          expect(body).toHaveProperty('gender', input.gender);
+          expect(body).toHaveProperty('contact', input.contact);
+          expect(body).toHaveProperty('birth_date');
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
+  describe('GET /clients/:id fail', () => {
+    test('not found id should send response with 404 status code', (done) => {
+
+      request(app)
+        .get(`/clients/9999999`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(404);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(typeof body.errors).toEqual('string');
+          expect(body.errors).toEqual('not found!');
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
   describe('POST /clients success', () => {
     test('should send response with 201 status code', (done) => {
       const input = {
