@@ -243,14 +243,15 @@ describe('PUT /groups success', () => {
       .put(`/groups/${groupId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
+      .send(updatedGroup)
       .then(response => {
         const { body, statusCode } = response
 
         expect(statusCode).toEqual(200)
         expect(typeof body).toEqual('object')
         expect(body).toHaveProperty('id', expect.any(Number))
-        expect(body).toHaveProperty('name', body.name)
-        expect(body).toHaveProperty('year', body.year)
+        expect(body).toHaveProperty('name', updatedGroup.name)
+        expect(body).toHaveProperty('year', updatedGroup.year)
         done()
       })
       .catch(err => done(err))
