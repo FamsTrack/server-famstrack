@@ -4,6 +4,10 @@ const { sequelize } = require('../models')
 const clearGroup = require('./helpers/clear-groups')
 
 let tokenAdmin, tokenFamily, groupId;
+const newGroup = {
+  name: 'FamTravel',
+  year: 2021
+}
 
 beforeAll(async (done) => {
   const admin = {
@@ -44,10 +48,7 @@ afterAll(async(done) => {
 
 // CREATE
 describe('POST /groups success', () => {
-  const newGroup = {
-    name: 'FamTravel',
-    year: 2021
-  }
+  
   test('Register new group should send response 201 status code', (done) => {
     request(app)
       .post('/groups')
@@ -225,6 +226,48 @@ describe('GET /groups fail', () => {
         expect(typeof body).toEqual('object');
         expect(body).toHaveProperty('errors', 'unauthorize action!');
         done()
+      })
+      .catch(err => done(err))
+  })
+})
+
+describe('GET /groups/:id success', () => {
+  test('GET groups id should send response 200 status code', (done) => {
+    request(app)
+      .get(`/groups/${groupId}`)
+      .set('access_token', tokenAdmin)
+      .then(response => {
+        const { body, statusCode } = response
+        
+        expect(statusCode).toEqual(200)
+        expect(body).toEqual({
+          id: expect.any(Number),
+          name: newGroup.name,
+          year: newGroup.year,
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String)
+        })
+        done()
+      })
+      .catch(err => done(err))
+  })
+})
+
+describe('GET /groups/:id fail', () => {
+  test('groups id not in database should send response 404 status code', (done) => {
+    request(app)
+      .get('/groups/99999')
+      .set('access_token', tokenAdmin)
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(404)
+        expect(typeof body).toEqual('object')
+        expect(body).toHaveProperty('errors')
+        expect(typeof body.errors).toEqual('string')
+        expect(body.errors).toEqual('not found!')
+
+        done();
       })
       .catch(err => done(err))
   })

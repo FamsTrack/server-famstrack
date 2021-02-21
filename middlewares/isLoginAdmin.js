@@ -12,7 +12,6 @@ module.exports = async(req, res, next) => {
     if (user.role !== 'admin') return next({ name: 'unauthorize' });
 
     req.user = decoded;
-
     next()
   } catch (error) {
     return next(error);

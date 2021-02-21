@@ -5,6 +5,7 @@ const isAdmin = require('../middlewares/isAdmin')
 
 router.post('/', isAdmin, groupController.add)
 router.get('/', isAdmin, groupController.getAll)
+router.get('/:id', isAdmin, groupController.getId)
 router.put('/:id', isAdmin, groupController.update)
 router.delete('/:id', isAdmin, groupController.delete)
 
