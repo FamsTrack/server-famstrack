@@ -10,17 +10,17 @@ class NewsController {
         description,
         active: true
       }
-      
+
       const newNews = await News.create(input)
       return res.status(201).json(newNews)
     } catch (err) {
       next(err)
     }
   }
-  
+
   static async getAll(req, res, next) {
     try {
-      const newsData = await News.findAll({where: {active: true}})
+      const newsData = await News.findAll({ where: { active: true } })
 
       return res.status(200).json(newsData)
     } catch (err) {
@@ -33,7 +33,7 @@ class NewsController {
       const id = req.params.id
       const news = await News.findByPk(id)
 
-      if (!news) return next({name: 'notFound'})
+      if (!news) return next({ name: 'notFound' })
       return res.status(200).json(news)
     } catch (err) {
       next(err)
@@ -46,14 +46,14 @@ class NewsController {
       const news = await News.findByPk(id)
       const { name, image, description, active } = req.body
       const input = {
-        name,
-        image,
-        description,
-        active
-      }
-      // console.log('dari controller news', news);
-      if (!news) return next({name: 'notFound'})
-      await news.update(input, {where: {id}})
+          name,
+          image,
+          description,
+          active
+        }
+        // console.log('dari controller news', news);
+      if (!news) return next({ name: 'notFound' })
+      await news.update(input, { where: { id } })
       await news.reload()
 
       res.status(200).json(news)
@@ -67,10 +67,10 @@ class NewsController {
       const id = +req.params.id
       const news = await News.findByPk(id)
 
-      if (!news) return next({name: 'notFound'})
+      if (!news) return next({ name: 'notFound' })
       await news.destroy()
 
-      return res.status(200).json({message: 'successfully delete group'})
+      return res.status(200).json({ message: 'successfully delete group' })
     } catch (err) {
       next(err)
     }

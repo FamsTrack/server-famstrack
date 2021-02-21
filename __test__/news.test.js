@@ -10,7 +10,7 @@ const input = {
 }
 let tokenAdmin, tokenFamily, newsId;
 
-beforeAll(async (done) => {
+beforeAll(async(done) => {
   const admin = {
     email: 'admin@famtrack.com',
     password: 'qwerty'
@@ -78,7 +78,7 @@ describe('POST /news fail', () => {
       .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  image: '', description: ''})
+      .send({ name: '', image: '', description: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -101,7 +101,7 @@ describe('POST /news fail', () => {
       .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  image: input.image, description: input.description})
+      .send({ name: '', image: input.image, description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -122,7 +122,7 @@ describe('POST /news fail', () => {
       .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, image: '', description: input.description})
+      .send({ name: input.name, image: '', description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -143,7 +143,7 @@ describe('POST /news fail', () => {
       .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, image: input.image, description: ''})
+      .send({ name: input.name, image: input.image, description: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -183,7 +183,7 @@ describe('POST /news fail', () => {
       .send(input)
       .then(response => {
         const { body, statusCode } = response
-        
+
         expect(statusCode).toEqual(401);
         expect(typeof body).toEqual('object');
         expect(body).toHaveProperty('errors', 'unauthorize action!');
@@ -202,6 +202,7 @@ describe('GET /news success', () => {
   test('GET news data should send response 200 status code', (done) => {
     request(app)
       .get('/news')
+      .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
 
@@ -230,6 +231,7 @@ describe('GET /news/:id success', () => {
   test('GET news id should send response 200 status code', (done) => {
     request(app)
       .get(`/news/${newsId}`)
+      .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
 
@@ -363,7 +365,7 @@ describe('PUT /groups fail', () => {
       description: 'qweqweqweqweqwe',
       active: false
     }
-    
+
     request(app)
       .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
@@ -391,7 +393,7 @@ describe('PUT /groups fail', () => {
       description: '',
       active: false
     }
-    
+
     request(app)
       .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
@@ -416,7 +418,7 @@ describe('PUT /groups fail', () => {
     request(app)
       .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -435,7 +437,7 @@ describe('PUT /groups fail', () => {
       .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 

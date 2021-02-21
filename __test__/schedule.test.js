@@ -13,7 +13,7 @@ const input = {
 
 let tokenAdmin, tokenFamily, scheduleId;
 
-beforeAll(async (done) => {
+beforeAll(async(done) => {
   const admin = {
     email: 'admin@famtrack.com',
     password: 'qwerty'
@@ -70,7 +70,7 @@ describe('POST /groups/:id/schedule success', () => {
         expect(body).toHaveProperty('date', input.date)
         expect(body).toHaveProperty('time', input.time)
         expect(body).toHaveProperty('description', input.description)
-        expect(body).toHaveProperty('GroupId', groupId)
+        expect(body).toHaveProperty('groupId', groupId)
         done()
       })
       .catch(err => done(err))
@@ -78,12 +78,12 @@ describe('POST /groups/:id/schedule success', () => {
 })
 
 describe('POST /groups/:id/schedule fail', () => {
-  test('create fail name, date, description and GroupId are empty should send response 400 status code', (done) => {
+  test('create fail name, date, description and groupId are empty should send response 400 status code', (done) => {
     request(app)
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '',  date: '', time: '', description: ''})
+      .send({ name: '', date: '', time: '', description: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -107,7 +107,7 @@ describe('POST /groups/:id/schedule fail', () => {
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', date: input.date, time: input.time, description: input.description})
+      .send({ name: '', date: input.date, time: input.time, description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -128,7 +128,7 @@ describe('POST /groups/:id/schedule fail', () => {
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, date: '', time: input.time, description: input.description})
+      .send({ name: input.name, date: '', time: input.time, description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -149,7 +149,7 @@ describe('POST /groups/:id/schedule fail', () => {
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, date: input.date, time: input.time, description: ''})
+      .send({ name: input.name, date: input.date, time: input.time, description: '' })
       .then(response => {
         const { body, statusCode } = response
 
@@ -165,12 +165,12 @@ describe('POST /groups/:id/schedule fail', () => {
       .catch(err => done(err))
   })
 
-  test('create fail GroupId not in data base should send response 400 status code', (done) => {
+  test('create fail groupId not in data base should send response 400 status code', (done) => {
     request(app)
       .post(`/groups/9999/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, date: input.date, description: input.description})
+      .send({ name: input.name, date: input.date, description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -208,7 +208,7 @@ describe('POST /groups/:id/schedule fail', () => {
       .send(input)
       .then(response => {
         const { body, statusCode } = response
-        
+
         expect(statusCode).toEqual(401);
         expect(typeof body).toEqual('object');
         expect(body).toHaveProperty('errors', 'unauthorize action!');
@@ -224,6 +224,7 @@ describe('GET /groups/:id/schedule success', () => {
   test('GET schedule data should send response 200 status code', (done) => {
     request(app)
       .get(`/groups/${groupId}/schedule`)
+      .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
 
@@ -237,7 +238,7 @@ describe('GET /groups/:id/schedule success', () => {
               description: input.description,
               date: input.date,
               time: input.time,
-              GroupId: groupId,
+              groupId: groupId,
               createdAt: expect.any(String),
               updatedAt: expect.any(String)
             })
@@ -250,12 +251,12 @@ describe('GET /groups/:id/schedule success', () => {
 })
 
 describe('GET /groups/:id/schedule fail', () => {
-  test('create fail GroupId not in data base should send response 400 status code', (done) => {
+  test('create fail groupId not in data base should send response 400 status code', (done) => {
     request(app)
       .post(`/groups/9999/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, date: input.date, description: input.description})
+      .send({ name: input.name, date: input.date, description: input.description })
       .then(response => {
         const { body, statusCode } = response
 
@@ -296,7 +297,7 @@ describe('PUT /groups/:id/schedule/:schId success', () => {
         expect(body).toHaveProperty('date', updated.date)
         expect(body).toHaveProperty('time', updated.time)
         expect(body).toHaveProperty('description', updated.description)
-        expect(body).toHaveProperty('GroupId', groupId)
+        expect(body).toHaveProperty('groupId', groupId)
         done()
       })
       .catch(err => done(err))
@@ -368,7 +369,7 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
       date: input.date,
       time: input.time
     }
-    
+
     request(app)
       .put(`/groups/${groupId}/schedule/${scheduleId}`)
       .set('Accept', 'application/json')
@@ -396,7 +397,7 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
       date: '',
       time: input.time
     }
-    
+
     request(app)
       .put(`/groups/${groupId}/schedule/${scheduleId}`)
       .set('Accept', 'application/json')
@@ -424,7 +425,7 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
       date: input.date,
       time: ''
     }
-    
+
     request(app)
       .put(`/groups/${groupId}/schedule/${scheduleId}`)
       .set('Accept', 'application/json')
@@ -449,7 +450,7 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
     request(app)
       .put(`/groups/${groupId}/schedule/${scheduleId}`)
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 
@@ -468,7 +469,7 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
       .put(`/groups/${groupId}/schedule/${scheduleId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel',  year: 2021})
+      .send({ name: 'FamTravel', year: 2021 })
       .then(response => {
         const { body, statusCode } = response
 

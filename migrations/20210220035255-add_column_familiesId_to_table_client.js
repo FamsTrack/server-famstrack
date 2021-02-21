@@ -3,7 +3,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('Clients', 'familiesId', {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'Families',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     })
   },
 
