@@ -14,7 +14,7 @@ class NewsController {
       const newNews = await News.create(input)
       return res.status(201).json(newNews)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -24,7 +24,7 @@ class NewsController {
 
       return res.status(200).json(newsData)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -36,7 +36,7 @@ class NewsController {
       if (!news) return next({ name: 'notFound' })
       return res.status(200).json(news)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -58,7 +58,7 @@ class NewsController {
 
       res.status(200).json(news)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -72,7 +72,7 @@ class NewsController {
 
       return res.status(200).json({ message: 'successfully delete group' })
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 }

@@ -6,7 +6,7 @@ class DeviceController {
       const device = await Device.findAll();
       return res.status(200).json(device);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -19,7 +19,7 @@ class DeviceController {
 
       return res.status(200).json(device);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -36,7 +36,7 @@ class DeviceController {
       const device = await Device.create(input);
       return res.status(201).json(device);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -59,7 +59,25 @@ class DeviceController {
 
       return res.status(200).json(device)
     } catch (error) {
-      next(error)
+      return next(error)
+    }
+  }
+
+  static async patchDevice(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { longitude, latitude, panicStatus, buzzerStatus } = req.body;
+      const input = { longitude, latitude, panicStatus, buzzerStatus };
+
+      const device = await Device.findByPk(id);
+      if (!device) return next({ name: 'notFound' });
+
+      await device.update(input, { where: { id } });
+      await device.reload();
+
+      return res.status(200).json(device)
+    } catch (error) {
+      return next(error)
     }
   }
 
@@ -75,7 +93,7 @@ class DeviceController {
         message: 'successfully delete device'
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 }

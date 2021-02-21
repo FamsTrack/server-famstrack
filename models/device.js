@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     longitude: {
       type: DataTypes.FLOAT,
       validate: {
+        notEmpty: {
+          msg: 'field longitude is required'
+        },
         isFloat: {
           msg: 'field longitude must float'
         }
@@ -34,6 +37,9 @@ module.exports = (sequelize, DataTypes) => {
     latitude: {
       type: DataTypes.FLOAT,
       validate: {
+        notEmpty: {
+          msg: 'field latitude is required'
+        },
         isFloat: {
           msg: 'field latitude must float'
         }

@@ -13,7 +13,7 @@ class GroupController {
       const newGroup = await Group.create(input)
       return res.status(201).json(newGroup)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -23,7 +23,7 @@ class GroupController {
 
       return res.status(200).json(group)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -35,7 +35,7 @@ class GroupController {
       if (!group) return next({ name: 'notFound' })
       return res.status(200).json(group)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -55,7 +55,7 @@ class GroupController {
 
       res.status(200).json(group)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -69,7 +69,7 @@ class GroupController {
 
       return res.status(200).json({ message: 'successfully delete group' })
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 }

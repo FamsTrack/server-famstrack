@@ -14,7 +14,7 @@ class ScheduleController {
       const schedule = await Schedule.create(input)
       return res.status(201).json(schedule)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -27,7 +27,7 @@ class ScheduleController {
       const scheduleData = await Schedule.findAll({ where: { groupId: id } })
       return res.status(200).json(scheduleData)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -47,7 +47,7 @@ class ScheduleController {
       await schedule.reload()
       return res.status(200).json(schedule)
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 
@@ -64,7 +64,7 @@ class ScheduleController {
       await schedule.destroy()
       return res.status(200).json({ message: 'successfully delete schedule' })
     } catch (err) {
-      next(err)
+      return next(err)
     }
   }
 }

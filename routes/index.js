@@ -7,8 +7,11 @@ const groupRouter = require('./group')
 const newsRouter = require('./news')
 const scheduleRouter = require('./schedule')
 const deviceRouter = require('./device')
+const deviceController = require('../controllers/deviceController');
+
 
 router.use(authRouter)
+router.patch('/devices/:id', deviceController.patchDevice);
 router.use(isLogin)
 router.use('/devices', deviceRouter)
 router.use('/news', newsRouter)

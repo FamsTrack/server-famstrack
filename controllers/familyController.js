@@ -82,7 +82,7 @@ class FamilyController {
       return res.status(200).json(family)
 
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -98,7 +98,7 @@ class FamilyController {
         message: 'successfully delete family'
       })
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
