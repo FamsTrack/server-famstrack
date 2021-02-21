@@ -7,8 +7,8 @@ const NewsController = require('../controllers/newsController');
 router.get('/', NewsController.getAll)
 router.get('/:id', NewsController.getId)
 
-router.post('/', isLoginAdmin, isAdmin, NewsController.add)
-router.put('/:id', isLoginAdmin, isAdmin, NewsController.update)
-router.delete('/:id', isLoginAdmin, isAdmin, NewsController.delete)
+router.post('/', isAdmin, NewsController.add)
+router.put('/:id', isAdmin, NewsController.update)
+router.delete('/:id', isAdmin, NewsController.delete)
 
 module.exports = router

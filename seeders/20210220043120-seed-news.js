@@ -1,6 +1,5 @@
 'use strict';
-const news = [
-  {
+const news = [{
     name: 'Fatigue Death, Penyebab Kematian Terbanyak Jemaah Haji',
     image: 'https://akcdn.detik.net.id/community/media/visual/2019/08/17/44b06635-5794-478d-8e4f-318ccc430f88_169.jpeg?w=700&q=90',
     description: `Menurut dr Edi Supriyatna MKK, Kepala Seksi Kesehatan Daerah Kerja Madinah, ada 4 faktor setidaknya yang menyebabkan jemaah haji mengalami gangguan kesehatan dan kematian. Pertama adalah air, kedua suhu, ketiga kelelahan, keempat adaptasi. Adapun jumlah kematian yang tinggi saat ini sebagian besar dipicu oleh kelelahan.
@@ -49,11 +48,11 @@ const news = [
 ]
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async(queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('News', news)
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async(queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('News', null)
   }
 };

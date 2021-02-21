@@ -26,8 +26,8 @@ class clientController {
 
   static async store(req, res, next) {
     try {
-      const { name, img, address, gender, contact, birth_date, familiesId } = req.body;
-      const input = { name, img, address, gender, contact, birth_date, familiesId };
+      const { name, img, address, gender, contact, birth_date, familiesId, groupId } = req.body;
+      const input = { name, img, address, gender, contact, birth_date, familiesId, groupId };
 
       if (familiesId) {
         const family = await Family.findByPk(familiesId)
@@ -45,8 +45,8 @@ class clientController {
   static async update(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, img, address, gender, contact, birth_date, familiesId } = req.body;
-      const input = { name, img, address, gender, contact, birth_date, familiesId };
+      const { name, img, address, gender, contact, birth_date, familiesId, groupId } = req.body;
+      const input = { name, img, address, gender, contact, birth_date, familiesId, groupId };
 
       const client = await Client.findByPk(id);
       if (!client) return next({ name: 'notFound' });

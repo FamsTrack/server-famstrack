@@ -3,7 +3,7 @@ const app = require('../app')
 const { sequelize } = require('../models')
 const clearClient = require('./helpers/clear-client')
 
-let tokenAdmin, tokenFamily, clientId, familiesIdDummy;
+let tokenAdmin, tokenFamily, clientId, familiesIdDummy, groupIdDummy;
 
 describe('Client', () => {
   beforeAll(async(done) => {
@@ -25,12 +25,14 @@ describe('Client', () => {
       gender: 'wanita'
     }
 
-
+    const inputGroup = {
+      name: 'FamTravel',
+      year: 2021
+    }
 
     const admins = await request(app)
       .post('/login')
       .send(admin)
-
 
     tokenAdmin = admins.body.access_token;
 
@@ -45,7 +47,14 @@ describe('Client', () => {
       .set('access_token', tokenAdmin)
       .send(inputFamilies)
 
+    const groups = await request(app)
+      .post('/groups')
+      .set('access_token', tokenAdmin)
+      .send(inputGroup)
+
+
     familiesIdDummy = familiesPost.body.id
+    groupIdDummy = groups.body.id
 
     done();
   })
@@ -85,6 +94,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -145,6 +155,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -182,6 +193,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -208,6 +220,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -227,7 +240,7 @@ describe('Client', () => {
         }).catch(err => done(err));
     });
 
-    test('store clients fail name, address, gender, contact, birth date empty should send response 400 status code', (done) => {
+    test('store clients fail name, address, gender, contact, birth date, families id, group id empty should send response 400 status code', (done) => {
       const input = {
         name: '',
         img: '',
@@ -235,6 +248,7 @@ describe('Client', () => {
         gender: '',
         contact: '',
         familiesId: '',
+        groupId: '',
         birth_date: ''
       }
       request(app)
@@ -255,7 +269,8 @@ describe('Client', () => {
             expect.arrayContaining(['gender should be one of pria or wanita']),
             expect.arrayContaining(['field contact is required']),
             expect.arrayContaining(['field birth date is required']),
-            expect.arrayContaining(['field family id is required'])
+            expect.arrayContaining(['field family id is required']),
+            expect.arrayContaining(['field group id is required'])
           );
           done()
         })
@@ -270,6 +285,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -299,6 +315,7 @@ describe('Client', () => {
         gender: '',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -328,6 +345,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -349,7 +367,7 @@ describe('Client', () => {
         .catch(err => done(err))
     })
 
-    test('store clients fail contact empty should send response 400 status code', (done) => {
+    test('store clients fail birth date empty should send response 400 status code', (done) => {
       const input = {
         name: 'Abdul Aziz',
         img: 'image.jpg',
@@ -357,6 +375,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: ''
       }
       request(app)
@@ -386,6 +405,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: '',
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -406,6 +426,36 @@ describe('Client', () => {
         })
         .catch(err => done(err))
     })
+
+    test('store clients fail group id empty should send response 400 status code', (done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        familiesId: familiesIdDummy,
+        groupId: '',
+        birth_date: new Date()
+      }
+      request(app)
+        .post('/clients')
+        .set('access_token', tokenAdmin)
+        .send(input)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(400);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(Array.isArray(body.errors)).toEqual(true);
+          expect(body.errors).toEqual(
+            expect.arrayContaining(['field group id is required'])
+          );
+          done()
+        })
+        .catch(err => done(err))
+    })
   });
 
   describe('PUT /clients success', () => {
@@ -417,6 +467,7 @@ describe('Client', () => {
         gender: 'wanita',
         contact: '082279655368',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -426,8 +477,6 @@ describe('Client', () => {
         .send(input)
         .then(response => {
           const { body, statusCode } = response
-
-          clientId = body.id
 
           expect(statusCode).toEqual(200);
           expect(typeof body).toEqual('object');
@@ -455,6 +504,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -481,6 +531,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
 
@@ -500,7 +551,7 @@ describe('Client', () => {
         }).catch(err => done(err));
     });
 
-    test('update clients fail name, address, gender, contact, birth date empty should send response 400 status code', (done) => {
+    test('update clients fail name, address, gender, contact, birth date, families id, group id empty should send response 400 status code', (done) => {
       const input = {
         name: '',
         img: '',
@@ -508,6 +559,7 @@ describe('Client', () => {
         gender: '',
         contact: '',
         familiesId: '',
+        groupId: '',
         birth_date: ''
       }
       request(app)
@@ -528,8 +580,8 @@ describe('Client', () => {
             expect.arrayContaining(['gender should be one of pria or wanita']),
             expect.arrayContaining(['field contact is required']),
             expect.arrayContaining(['field birth date is required']),
-            expect.arrayContaining(['field family id is required'])
-
+            expect.arrayContaining(['field family id is required']),
+            expect.arrayContaining(['field group id is required']),
           );
           done()
         })
@@ -544,6 +596,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -573,6 +626,7 @@ describe('Client', () => {
         gender: '',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -602,6 +656,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: new Date()
       }
       request(app)
@@ -623,7 +678,7 @@ describe('Client', () => {
         .catch(err => done(err))
     })
 
-    test('update clients fail contact empty should send response 400 status code', (done) => {
+    test('update clients fail birth date empty should send response 400 status code', (done) => {
       const input = {
         name: 'Abdul Aziz',
         img: 'image.jpg',
@@ -631,6 +686,7 @@ describe('Client', () => {
         gender: 'pria',
         contact: '082279655366',
         familiesId: familiesIdDummy,
+        groupId: groupIdDummy,
         birth_date: ''
       }
       request(app)
@@ -675,6 +731,36 @@ describe('Client', () => {
           expect(Array.isArray(body.errors)).toEqual(true);
           expect(body.errors).toEqual(
             expect.arrayContaining(['field family id is required'])
+          );
+          done()
+        })
+        .catch(err => done(err))
+    })
+
+    test('update clients fail group id empty should send response 400 status code', (done) => {
+      const input = {
+        name: 'Abdul Aziz',
+        img: 'image.jpg',
+        address: 'jln. bangau',
+        gender: 'pria',
+        contact: '082279655366',
+        familiesId: familiesIdDummy,
+        groupId: '',
+        birth_date: new Date()
+      }
+      request(app)
+        .put(`/clients/${clientId}`)
+        .set('access_token', tokenAdmin)
+        .send(input)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(400);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(Array.isArray(body.errors)).toEqual(true);
+          expect(body.errors).toEqual(
+            expect.arrayContaining(['field group id is required'])
           );
           done()
         })

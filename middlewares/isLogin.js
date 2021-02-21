@@ -9,7 +9,6 @@ module.exports = async(req, res, next) => {
     const user = await User.findOne({ where: { email: decoded.email } });
 
     if (!user) return next({ name: 'authValidate' });
-    if (user.role !== 'admin') return next({ name: 'unauthorize' });
 
     req.user = decoded;
     next()
