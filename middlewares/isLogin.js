@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const decodeToken = require('../helpers/decodeToken');
+const decodeToken = require('../helpers/decodedToken');
 
 module.exports = async(req, res, next) => {
   try {
@@ -9,7 +9,6 @@ module.exports = async(req, res, next) => {
     const user = await User.findOne({ where: { email: decoded.email } });
 
     if (!user) return next({ name: 'authValidate' });
-    if (user.role !== 'family') return next({ name: 'unauthorize' });
 
     req.user = decoded;
 

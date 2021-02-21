@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association her
+      Group.hasMany(models.Client, { as: 'client', foreignKey: 'groupId' })
     }
   };
   Group.init({

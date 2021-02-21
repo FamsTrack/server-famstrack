@@ -171,7 +171,6 @@ describe('POST /groups fail', () => {
 })
 
 //READ
-
 describe('GET /groups success', () => {
   test('GET groups data should send response 200 status code', (done) => {
     request(app)
@@ -179,7 +178,6 @@ describe('GET /groups success', () => {
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
-        // console.log('<<<<<<<<<<<<HEYYYY>>>>>>>', body);
         expect(statusCode).toEqual(200)
         expect(Array.isArray(body)).toEqual(true);
         expect(body).toEqual(

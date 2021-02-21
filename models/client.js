@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Client.belongsTo(models.Family, { as: 'family', foreignKey: 'familiesId' })
+      Client.belongsTo(models.Group, { as: 'group', foreignKey: 'groupId' })
     }
   };
   Client.init({
@@ -68,6 +69,14 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg: 'field family id is required'
+        }
+      }
+    },
+    groupId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          msg: 'field group id is required'
         }
       }
     }
