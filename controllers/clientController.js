@@ -7,7 +7,7 @@ class clientController {
 
       return res.status(200).json(client);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -20,7 +20,7 @@ class clientController {
 
       return res.status(200).json(client);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -63,14 +63,6 @@ class clientController {
 
     } catch (error) {
       return next(error);
-    }
-  }
-
-  static async patchDevice(req, res, next) {
-    try {
-
-    } catch (error) {
-      return next(error)
     }
   }
 
