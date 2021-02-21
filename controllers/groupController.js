@@ -9,7 +9,7 @@ class GroupController {
         year,
         UserId: req.user.id
       }
-      console.log(input);
+      // console.log(input);
 
       const newGroup = await Group.create(input)
       return res.status(201).json(newGroup)
