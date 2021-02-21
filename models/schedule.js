@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Schedule.belongsTo(models.Group)
+      Schedule.belongsTo(models.Group, { as: 'group', foreignKey: 'groupId' })
     }
   };
   Schedule.init({
@@ -58,11 +58,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    GroupId: {
+    groupId: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'field GroupId is required'
+          msg: 'field group id is required'
         }
       }
     }

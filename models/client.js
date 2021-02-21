@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Client.belongsTo(models.Family, { as: 'family', foreignKey: 'familiesId' })
       Client.belongsTo(models.Group, { as: 'group', foreignKey: 'groupId' })
+      Client.hasOne(models.Device, { as: 'device', foreignKey: 'clientId' })
     }
   };
   Client.init({

@@ -7,7 +7,7 @@ class clientController {
 
       return res.status(200).json(client);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -20,7 +20,7 @@ class clientController {
 
       return res.status(200).json(client);
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -62,7 +62,7 @@ class clientController {
       return res.status(200).json(client)
 
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -78,7 +78,7 @@ class clientController {
         message: 'successfully delete client'
       })
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }

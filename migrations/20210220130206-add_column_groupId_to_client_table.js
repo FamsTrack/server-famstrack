@@ -3,7 +3,13 @@
 module.exports = {
   up: async(queryInterface, Sequelize) => {
     return queryInterface.addColumn('Clients', 'groupId', {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'Groups',
+        key: 'id'
+      },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     })
   },
 

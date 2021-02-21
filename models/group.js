@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Group.hasMany(models.Client, { as: 'client', foreignKey: 'groupId' })
-      Group.hasMany(models.Schedule)
+      Group.hasMany(models.Schedule, { as: 'schedule', foreignKey: 'groupId' })
     }
   };
   Group.init({
