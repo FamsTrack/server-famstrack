@@ -11,7 +11,6 @@ module.exports = async(req, res, next) => {
     if (!user) return next({ name: 'authValidate' });
 
     req.user = decoded;
-
     next()
   } catch (error) {
     return next(error);

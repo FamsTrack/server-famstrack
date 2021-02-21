@@ -3,18 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Group extends Model {
+  class News extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Group.hasMany(models.Client, { as: 'client', foreignKey: 'groupId' })
-      Group.hasMany(models.Schedule)
+      // define association here
     }
   };
-  Group.init({
+  News.init({
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -23,17 +22,28 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    year: {
-      type: DataTypes.INTEGER,
+    image: {
+      type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          msg: 'field year is required'
+          msg: 'field image is required'
         }
       }
+    },
+    description: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field description is required'
+        }
+      }
+    },
+    active: {
+      type: DataTypes.STRING
     }
   }, {
     sequelize,
-    modelName: 'Group',
+    modelName: 'News',
   });
-  return Group;
+  return News;
 };

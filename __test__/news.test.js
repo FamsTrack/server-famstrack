@@ -1,15 +1,16 @@
 const request = require('supertest');
 const app = require('../app')
 const { sequelize } = require('../models')
-const clearGroup = require('./helpers/clear-groups')
+const clearNews = require('./helpers/clear-news')
 
-let tokenAdmin, tokenFamily, groupId;
-const newGroup = {
-  name: 'FamTravel',
-  year: 2021
+const input = {
+  name: 'Qui potest igitur habitare in beata vita summi mali metus?',
+  image: '/image.pjg',
+  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Solum praeterea formosum, solum liberum, solum civem, stultost; Est autem etiam actio quaedam corporis, quae motus et status naturae congruentis tenet; Aeque enim contingit omnibus fidibus, ut incontentae sint. Hic nihil fuit, quod quaereremus. Sed ut iis bonis erigimur, quae expectamus, sic laetamur iis, quae recordamur. Duo Reges: constructio interrete. Aut haec tibi, Torquate, sunt vituperanda aut patrocinium voluptatis repudiandum.'
 }
+let tokenAdmin, tokenFamily, newsId;
 
-beforeAll(async(done) => {
+beforeAll(async (done) => {
   const admin = {
     email: 'admin@famtrack.com',
     password: 'qwerty'
@@ -32,12 +33,13 @@ beforeAll(async(done) => {
 
   tokenFamily = familys.body.access_token;
 
+  console.log(tokenAdmin)
   done();
 })
 
 afterAll(async(done) => {
   try {
-    await clearGroup()
+    await clearNews()
     await sequelize.close();
     done();
   } catch (error) {
@@ -45,37 +47,38 @@ afterAll(async(done) => {
   }
 })
 
-// CREATE
-describe('POST /groups success', () => {
-
-  test('Register new group should send response 201 status code', (done) => {
+//CREATE
+describe('POST /news success', () => {
+  test('create new news should send response 201 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send(newGroup)
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
 
-        groupId = body.id
+        newsId = body.id
         expect(statusCode).toEqual(201)
         expect(typeof body).toEqual('object')
         expect(body).toHaveProperty('id', expect.any(Number))
-        expect(body).toHaveProperty('name', newGroup.name)
-        expect(body).toHaveProperty('year', newGroup.year)
+        expect(body).toHaveProperty('name', input.name)
+        expect(body).toHaveProperty('image', input.image)
+        expect(body).toHaveProperty('description', input.description)
+        expect(body).toHaveProperty('active', true)
         done()
       })
       .catch(err => done(err))
   })
 })
 
-describe('POST /groups fail', () => {
-  test('Register fail name and year empty should send response 400 status code', (done) => {
+describe('POST /news fail', () => {
+  test('create fail name, image and description are empty should send response 400 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', year: '' })
+      .send({ name: '',  image: '', description: ''})
       .then(response => {
         const { body, statusCode } = response
 
@@ -85,19 +88,20 @@ describe('POST /groups fail', () => {
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
           expect.arrayContaining(['field name is required']),
-          expect.arrayContaining(['field year is required'])
+          expect.arrayContaining(['field image is required']),
+          expect.arrayContaining(['field description is required'])
         );
         done()
       })
       .catch(err => done(err))
   })
 
-  test('Register fail name empty should send response 400 status code', (done) => {
+  test('create fail name empty should send response 400 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', year: 2021 })
+      .send({ name: '',  image: input.image, description: input.description})
       .then(response => {
         const { body, statusCode } = response
 
@@ -113,12 +117,12 @@ describe('POST /groups fail', () => {
       .catch(err => done(err))
   })
 
-  test('Register fail year empty should send response 400 status code', (done) => {
+  test('create fail image empty should send response 400 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: 'FamTravel', year: '' })
+      .send({ name: input.name, image: '', description: input.description})
       .then(response => {
         const { body, statusCode } = response
 
@@ -127,7 +131,28 @@ describe('POST /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
-          expect.arrayContaining(['field year is required'])
+          expect.arrayContaining(['field image is required'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('create fail description empty should send response 400 status code', (done) => {
+    request(app)
+      .post('/news')
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({ name: input.name, image: input.image, description: ''})
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['field description is required'])
         );
         done()
       })
@@ -136,9 +161,9 @@ describe('POST /groups fail', () => {
 
   test('Register fail no token 500 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel', year: 2021 })
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
 
@@ -152,13 +177,13 @@ describe('POST /groups fail', () => {
 
   test('Register fail send token but not admin 401 status code', (done) => {
     request(app)
-      .post('/groups')
+      .post('/news')
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel', year: 2021 })
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
-
+        
         expect(statusCode).toEqual(401);
         expect(typeof body).toEqual('object');
         expect(body).toHaveProperty('errors', 'unauthorize action!');
@@ -172,20 +197,26 @@ describe('POST /groups fail', () => {
 })
 
 //READ
-describe('GET /groups success', () => {
-  test('GET groups data should send response 200 status code', (done) => {
+
+describe('GET /news success', () => {
+  test('GET news data should send response 200 status code', (done) => {
     request(app)
-      .get('/groups')
-      .set('access_token', tokenAdmin)
+      .get('/news')
       .then(response => {
         const { body, statusCode } = response
+
         expect(statusCode).toEqual(200)
         expect(Array.isArray(body)).toEqual(true);
         expect(body).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              name: 'FamTravel',
-              year: 2021
+              id: expect.any(Number),
+              name: input.name,
+              image: input.image,
+              description: input.description,
+              active: true,
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String)
             })
           ])
         )
@@ -195,52 +226,20 @@ describe('GET /groups success', () => {
   })
 })
 
-describe('GET /groups fail', () => {
-  test('GET groups fail no token send response 500 status code', (done) => {
+describe('GET /news/:id success', () => {
+  test('GET news id should send response 200 status code', (done) => {
     request(app)
-      .get('/groups')
-      .then(response => {
-        const { body, statusCode } = response
-
-        expect(statusCode).toEqual(500);
-        expect(typeof body).toEqual('object');
-        expect(body).toHaveProperty('errors');
-        expect(typeof body.errors).toEqual('string');
-        expect(body.errors).toEqual('jwt must be provided');
-        done();
-      })
-      .catch(err => done(err))
-  })
-
-  test('GET groups fail send token but not admin send response 401 status code', (done) => {
-    request(app)
-      .get('/groups')
-      .set('access_token', tokenFamily)
-      .then(response => {
-        const { body, statusCode } = response
-
-        expect(statusCode).toEqual(401);
-        expect(typeof body).toEqual('object');
-        expect(body).toHaveProperty('errors', 'unauthorize action!');
-        done()
-      })
-      .catch(err => done(err))
-  })
-})
-
-describe('GET /groups/:id success', () => {
-  test('GET groups id should send response 200 status code', (done) => {
-    request(app)
-      .get(`/groups/${groupId}`)
-      .set('access_token', tokenAdmin)
+      .get(`/news/${newsId}`)
       .then(response => {
         const { body, statusCode } = response
 
         expect(statusCode).toEqual(200)
         expect(body).toEqual({
           id: expect.any(Number),
-          name: newGroup.name,
-          year: newGroup.year,
+          name: input.name,
+          image: input.image,
+          description: input.description,
+          active: true,
           createdAt: expect.any(String),
           updatedAt: expect.any(String)
         })
@@ -250,10 +249,10 @@ describe('GET /groups/:id success', () => {
   })
 })
 
-describe('GET /groups/:id fail', () => {
-  test('groups id not in database should send response 404 status code', (done) => {
+describe('GET /news/:id fail', () => {
+  test('news id not in database should send response 404 status code', (done) => {
     request(app)
-      .get('/groups/99999')
+      .get('/news/999999999')
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
@@ -270,28 +269,30 @@ describe('GET /groups/:id fail', () => {
   })
 })
 
-//UPDATE
+// UPDATE
 
-describe('PUT /groups success', () => {
-  const updatedGroup = {
-    name: 'FamTravelling',
-    year: 2020
+describe('PUT /news/:id success', () => {
+  const updatedNews = {
+    name: 'qweqwe',
+    image: '/image.png',
+    description: 'qweqweqweqweqwe',
+    active: false
   }
 
   test('PUT groups send response 200 status code', (done) => {
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send(updatedGroup)
+      .send(updatedNews)
       .then(response => {
         const { body, statusCode } = response
 
         expect(statusCode).toEqual(200)
         expect(typeof body).toEqual('object')
         expect(body).toHaveProperty('id', expect.any(Number))
-        expect(body).toHaveProperty('name', updatedGroup.name)
-        expect(body).toHaveProperty('year', updatedGroup.year)
+        expect(body).toHaveProperty('name', updatedNews.name)
+        expect(body).toHaveProperty('year', updatedNews.year)
         done()
       })
       .catch(err => done(err))
@@ -299,12 +300,18 @@ describe('PUT /groups success', () => {
 })
 
 describe('PUT /groups fail', () => {
-  test('PUT fail name and year empty should send response 400 status code', (done) => {
+  test('PUT fail name, image and description should send response 400 status code', (done) => {
+    const input = {
+      name: '',
+      image: '',
+      description: '',
+      active: false
+    }
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', year: '' })
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
 
@@ -314,7 +321,8 @@ describe('PUT /groups fail', () => {
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
           expect.arrayContaining(['field name is required']),
-          expect.arrayContaining(['field year is required'])
+          expect.arrayContaining(['field image is required']),
+          expect.arrayContaining(['field description is required'])
         );
         done()
       })
@@ -322,11 +330,17 @@ describe('PUT /groups fail', () => {
   })
 
   test('PUT fail name empty should send response 400 status code', (done) => {
+    const input = {
+      name: '',
+      image: '/image.png',
+      description: 'qweqweqweqweqwe',
+      active: false
+    }
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', year: 2021 })
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
 
@@ -342,12 +356,19 @@ describe('PUT /groups fail', () => {
       .catch(err => done(err))
   })
 
-  test('PUT fail year empty should send response 400 status code', (done) => {
+  test('PUT fail image empty should send response 400 status code', (done) => {
+    const input = {
+      name: 'qweqwe',
+      image: '',
+      description: 'qweqweqweqweqwe',
+      active: false
+    }
+    
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: 'FamTravel', year: '' })
+      .send(input)
       .then(response => {
         const { body, statusCode } = response
 
@@ -356,7 +377,35 @@ describe('PUT /groups fail', () => {
         expect(body).toHaveProperty('errors');
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
-          expect.arrayContaining(['field year is required'])
+          expect.arrayContaining(['field image is required'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('PUT fail description empty should send response 400 status code', (done) => {
+    const input = {
+      name: 'qweqwe',
+      image: '/image/png',
+      description: '',
+      active: false
+    }
+    
+    request(app)
+      .put(`/news/${newsId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send(input)
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['field description is required'])
         );
         done()
       })
@@ -365,9 +414,9 @@ describe('PUT /groups fail', () => {
 
   test('PUT fail no token 500 status code', (done) => {
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
-      .send({ name: 'FamTravel', year: 2021 })
+      .send({ name: 'FamTravel',  year: 2021})
       .then(response => {
         const { body, statusCode } = response
 
@@ -383,10 +432,10 @@ describe('PUT /groups fail', () => {
 
   test('PUT fail send token but not admin 401 status code', (done) => {
     request(app)
-      .put(`/groups/${groupId}`)
+      .put(`/news/${newsId}`)
       .set('Accept', 'application/json')
       .set('access_token', tokenFamily)
-      .send({ name: 'FamTravel', year: 2021 })
+      .send({ name: 'FamTravel',  year: 2021})
       .then(response => {
         const { body, statusCode } = response
 
@@ -398,9 +447,9 @@ describe('PUT /groups fail', () => {
       .catch(err => done(err))
   })
 
-  test('group id not in database should send response 404 status code', (done) => {
+  test('news id not in database should send response 404 status code', (done) => {
     request(app)
-      .put('/groups/999999999')
+      .put('/news/999999999')
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
@@ -417,12 +466,12 @@ describe('PUT /groups fail', () => {
   })
 })
 
-//DELETE
+// DELETE
 
-describe('DELETE /groups success', () => {
+describe('DELETE /news/:id success', () => {
   test('delete success should send response 200 status code', (done) => {
     request(app)
-      .delete(`/groups/${groupId}`)
+      .delete(`/news/${newsId}`)
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
@@ -438,10 +487,10 @@ describe('DELETE /groups success', () => {
   })
 })
 
-describe('DELETE /groups fail', () => {
+describe('DELETE /news/:id fail', () => {
   test('no token with 500 status code', (done) => {
     request(app)
-      .delete(`/groups/${groupId}`)
+      .delete(`/news/${newsId}`)
       .then(response => {
         const { body, statusCode } = response
 
@@ -458,7 +507,7 @@ describe('DELETE /groups fail', () => {
 
   test('loggedin user role not admin should send response 401 status code', (done) => {
     request(app)
-      .delete(`/groups/${groupId}`)
+      .delete(`/news/${newsId}`)
       .set('access_token', tokenFamily)
       .then(response => {
         const { body, statusCode } = response
@@ -471,9 +520,9 @@ describe('DELETE /groups fail', () => {
       .catch(err => done(err))
   })
 
-  test('group id not in database should send response 404 status code', (done) => {
+  test('news id not in database should send response 404 status code', (done) => {
     request(app)
-      .delete('/groups/999999999')
+      .delete('/news/999999999')
       .set('access_token', tokenAdmin)
       .then(response => {
         const { body, statusCode } = response
