@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         dateFormat(value) {
           let arr = value.split('-')
           if (value[4] !== '-' || arr[1] > 12) {
-            throw new Error('date format should be yyyy/mm/dd')
+            throw new Error('date format should be yyyy-mm-dd')
           }
         }
       }
@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'field time is required'
         },
         timeFormat(value) {
-          if (value.split(':')[0] > 23) {
+          if (value.split(':')[0] > 23 || value[2] !== ':') {
             throw new Error('time format should be hh:mm')
           }
         }
