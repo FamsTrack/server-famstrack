@@ -82,7 +82,7 @@ class DeviceController {
       await device.update(data, { where: { arduinoUniqueKey } });
       await device.reload();
 
-      await History.create({ longitude: device.longitude, latitude: device.latitude, clientId: device.clientId, deviceId: id })
+      await History.create({ longitude: device.longitude, latitude: device.latitude, clientId: device.clientId, deviceId: device.id })
 
       // TODO exemple using socket to broadcast to all user 
       // io.emit('data:client', client)
