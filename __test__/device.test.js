@@ -635,7 +635,7 @@ describe('Devices', () => {
       buzzerStatus: true,
       arduinoUniqueKey: 'qwert12345',
     }
-    test('should send response with 201 status code', (done) => {
+    test('should send response with 200 status code', (done) => {
       request(app)
         .put(`/devices/${deviceId}`)
         .set('Accept', 'application/json')

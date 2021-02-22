@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Device.belongsTo(models.Client, { as: 'client', foreignKey: 'clientId' });
+      Device.hasMany(models.History, { as: 'history', foreignKey: 'deviceId' })
     }
   };
   Device.init({
@@ -20,8 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           msg: 'field arduino unique key is required'
         }
-      },
-      unique: true
+      }
     },
     longitude: {
       type: DataTypes.FLOAT,

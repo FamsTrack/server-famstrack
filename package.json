@@ -18,7 +18,7 @@
     "db:seed:test": "SET NODE_ENV=test&npm run db:seed",
     "start": "node ./bin/http.js",
     "dev": "SET NODE_ENV=development&nodemon ./bin/http.js",
-    "test": "SET NODE_ENV=test&npx jest --detectOpenHandles --forceExit"
+    "test": "SET NODE_ENV=test&npx jest --detectOpenHandles --forceExit --coverage"
   },
   "repository": {
     "type": "git",
@@ -33,9 +33,11 @@
   "homepage": "https://github.com/FamsTrack/server-famstrack#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.24.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
     "pg": "^8.5.1",
     "sequelize": "^6.5.0"
   },

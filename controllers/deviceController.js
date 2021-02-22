@@ -1,4 +1,4 @@
-const { Client, Device } = require('../models');
+const { Client, Device, History } = require('../models');
 
 class DeviceController {
   static async getAll(req, res, next) {
@@ -33,6 +33,9 @@ class DeviceController {
         if (!client) return next({ name: 'notFound' });
       }
 
+      const deviceUnique = await Device.findOne({ where: { arduinoUniqueKey } });
+      if (deviceUnique) return next({ name: 'deviceUnique' })
+
       const device = await Device.create(input);
       return res.status(201).json(device);
     } catch (error) {
@@ -48,6 +51,9 @@ class DeviceController {
 
       const device = await Device.findByPk(id);
       if (!device) return next({ name: 'notFound' });
+
+      const deviceUnique = await Device.findOne({ where: { arduinoUniqueKey } });
+      if (deviceUnique && deviceUnique.id !== +id) return next({ name: 'deviceUnique' })
 
       if (clientId) {
         const client = await Client.findByPk(clientId)
@@ -74,6 +80,8 @@ class DeviceController {
 
       await device.update(input, { where: { id } });
       await device.reload();
+
+      await History.create({ longitude, latitude, clientId: device.clientId, deviceId: id })
 
       return res.status(200).json(device)
     } catch (error) {
