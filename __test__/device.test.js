@@ -450,182 +450,182 @@ describe('Devices', () => {
     })
   })
 
-  describe('PATCH /device success', () => {
-    const newDevice = {
-      longitude: 110.371755,
-      latitude: -7.795425,
-      panicStatus: true,
-      buzzerStatus: true,
-    }
-    test('should send response with 201 status code', (done) => {
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('Accept', 'application/json')
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  // describe('PATCH /device success', () => {
+  //   const newDevice = {
+  //     longitude: 110.371755,
+  //     latitude: -7.795425,
+  //     panicStatus: true,
+  //     buzzerStatus: true,
+  //   }
+  //   test('should send response with 201 status code', (done) => {
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('Accept', 'application/json')
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toBe(200)
-          expect(body).toHaveProperty('id', expect.any(Number))
-          expect(body).toHaveProperty('longitude', newDevice.longitude)
-          expect(body).toHaveProperty('latitude', newDevice.latitude)
-          expect(body).toHaveProperty('panicStatus', newDevice.panicStatus)
-          expect(body).toHaveProperty('buzzerStatus', newDevice.buzzerStatus)
+  //         expect(statusCode).toBe(200)
+  //         expect(body).toHaveProperty('id', expect.any(Number))
+  //         expect(body).toHaveProperty('longitude', newDevice.longitude)
+  //         expect(body).toHaveProperty('latitude', newDevice.latitude)
+  //         expect(body).toHaveProperty('panicStatus', newDevice.panicStatus)
+  //         expect(body).toHaveProperty('buzzerStatus', newDevice.buzzerStatus)
 
-          done()
-        })
-        .catch(err => done(err))
-    })
-  })
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
+  // })
 
-  describe('PATCH /devices fail', () => {
-    test('update devices fail longitude, latitude, panicStatus, buzzerStatus empty should send response 400 status code', (done) => {
-      const newDevice = {
-        longitude: '',
-        latitude: '',
-        panicStatus: '',
-        buzzerStatus: '',
-      }
+  // describe('PATCH /devices fail', () => {
+  //   test('update devices fail longitude, latitude, panicStatus, buzzerStatus empty should send response 400 status code', (done) => {
+  //     const newDevice = {
+  //       longitude: '',
+  //       latitude: '',
+  //       panicStatus: '',
+  //       buzzerStatus: '',
+  //     }
 
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toEqual(400);
-          expect(typeof body).toEqual('object');
-          expect(body).toHaveProperty('errors');
-          expect(Array.isArray(body.errors)).toEqual(true);
-          expect(body.errors).toEqual(
-            expect.arrayContaining(['field longitude is required']),
-            expect.arrayContaining(['field latitude is required']),
-            expect.arrayContaining(['field panicStatus is required']),
-            expect.arrayContaining(['field buzzerStatus is required']),
-            expect.arrayContaining(['field longitude must float']),
-            expect.arrayContaining(['field latitude must float'])
-          );
-          done()
-        })
-        .catch(err => done(err))
-    })
+  //         expect(statusCode).toEqual(400);
+  //         expect(typeof body).toEqual('object');
+  //         expect(body).toHaveProperty('errors');
+  //         expect(Array.isArray(body.errors)).toEqual(true);
+  //         expect(body.errors).toEqual(
+  //           expect.arrayContaining(['field longitude is required']),
+  //           expect.arrayContaining(['field latitude is required']),
+  //           expect.arrayContaining(['field panicStatus is required']),
+  //           expect.arrayContaining(['field buzzerStatus is required']),
+  //           expect.arrayContaining(['field longitude must float']),
+  //           expect.arrayContaining(['field latitude must float'])
+  //         );
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
 
-    test('patch device fail longitude empty should send response 400 status code', (done) => {
-      const newDevice = {
-        longitude: '',
-        latitude: -7.795424,
-        panicStatus: false,
-        buzzerStatus: false
-      }
+  //   test('patch device fail longitude empty should send response 400 status code', (done) => {
+  //     const newDevice = {
+  //       longitude: '',
+  //       latitude: -7.795424,
+  //       panicStatus: false,
+  //       buzzerStatus: false
+  //     }
 
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('Accept', 'application/json')
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('Accept', 'application/json')
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toEqual(400);
-          expect(typeof body).toEqual('object');
-          expect(body).toHaveProperty('errors');
-          expect(Array.isArray(body.errors)).toEqual(true);
-          expect(body.errors).toEqual(
-            expect.arrayContaining(['field longitude is required']),
-            expect.arrayContaining(['field longitude must float'])
-          );
-          done()
-        })
-        .catch(err => done(err))
-    })
+  //         expect(statusCode).toEqual(400);
+  //         expect(typeof body).toEqual('object');
+  //         expect(body).toHaveProperty('errors');
+  //         expect(Array.isArray(body.errors)).toEqual(true);
+  //         expect(body.errors).toEqual(
+  //           expect.arrayContaining(['field longitude is required']),
+  //           expect.arrayContaining(['field longitude must float'])
+  //         );
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
 
-    test('patch device fail latitude empty should send response 400 status code', (done) => {
-      const newDevice = {
-        longitude: 110.371754,
-        latitude: '',
-        panicStatus: false,
-        buzzerStatus: false
-      }
+  //   test('patch device fail latitude empty should send response 400 status code', (done) => {
+  //     const newDevice = {
+  //       longitude: 110.371754,
+  //       latitude: '',
+  //       panicStatus: false,
+  //       buzzerStatus: false
+  //     }
 
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('Accept', 'application/json')
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('Accept', 'application/json')
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toEqual(400);
-          expect(typeof body).toEqual('object');
-          expect(body).toHaveProperty('errors');
-          expect(Array.isArray(body.errors)).toEqual(true);
-          expect(body.errors).toEqual(
-            expect.arrayContaining(['field latitude is required']),
-            expect.arrayContaining(['field latitude must float'])
-          );
-          done()
-        })
-        .catch(err => done(err))
-    })
+  //         expect(statusCode).toEqual(400);
+  //         expect(typeof body).toEqual('object');
+  //         expect(body).toHaveProperty('errors');
+  //         expect(Array.isArray(body.errors)).toEqual(true);
+  //         expect(body.errors).toEqual(
+  //           expect.arrayContaining(['field latitude is required']),
+  //           expect.arrayContaining(['field latitude must float'])
+  //         );
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
 
-    test('patch device fail panicStatus empty should send response 400 status code', (done) => {
-      const newDevice = {
-        longitude: 110.371754,
-        latitude: -7.795424,
-        panicStatus: '',
-        buzzerStatus: false,
-      }
+  //   test('patch device fail panicStatus empty should send response 400 status code', (done) => {
+  //     const newDevice = {
+  //       longitude: 110.371754,
+  //       latitude: -7.795424,
+  //       panicStatus: '',
+  //       buzzerStatus: false,
+  //     }
 
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('Accept', 'application/json')
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('Accept', 'application/json')
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toEqual(400);
-          expect(typeof body).toEqual('object');
-          expect(body).toHaveProperty('errors');
-          expect(Array.isArray(body.errors)).toEqual(true);
-          expect(body.errors).toEqual(
-            expect.arrayContaining(['field panic status is required'])
-          );
-          done()
-        })
-        .catch(err => done(err))
-    })
+  //         expect(statusCode).toEqual(400);
+  //         expect(typeof body).toEqual('object');
+  //         expect(body).toHaveProperty('errors');
+  //         expect(Array.isArray(body.errors)).toEqual(true);
+  //         expect(body.errors).toEqual(
+  //           expect.arrayContaining(['field panic status is required'])
+  //         );
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
 
-    test('patch device fail buzzerStatus empty should send response 400 status code', (done) => {
-      const newDevice = {
-        longitude: 110.371754,
-        latitude: -7.795424,
-        panicStatus: false,
-        buzzerStatus: '',
-      }
+  //   test('patch device fail buzzerStatus empty should send response 400 status code', (done) => {
+  //     const newDevice = {
+  //       longitude: 110.371754,
+  //       latitude: -7.795424,
+  //       panicStatus: false,
+  //       buzzerStatus: '',
+  //     }
 
-      request(app)
-        .patch(`/devices/${deviceId}`)
-        .set('Accept', 'application/json')
-        .set('access_token', tokenAdmin)
-        .send(newDevice)
-        .then(response => {
-          const { body, statusCode } = response
+  //     request(app)
+  //       .patch(`/devices/${deviceId}`)
+  //       .set('Accept', 'application/json')
+  //       .set('access_token', tokenAdmin)
+  //       .send(newDevice)
+  //       .then(response => {
+  //         const { body, statusCode } = response
 
-          expect(statusCode).toEqual(400);
-          expect(typeof body).toEqual('object');
-          expect(body).toHaveProperty('errors');
-          expect(Array.isArray(body.errors)).toEqual(true);
-          expect(body.errors).toEqual(
-            expect.arrayContaining(['field buzzer status is required'])
-          );
-          done()
-        })
-        .catch(err => done(err))
-    })
-  })
+  //         expect(statusCode).toEqual(400);
+  //         expect(typeof body).toEqual('object');
+  //         expect(body).toHaveProperty('errors');
+  //         expect(Array.isArray(body.errors)).toEqual(true);
+  //         expect(body.errors).toEqual(
+  //           expect.arrayContaining(['field buzzer status is required'])
+  //         );
+  //         done()
+  //       })
+  //       .catch(err => done(err))
+  //   })
+  // })
 
   describe('PUT /device success', () => {
     const newDevice = {

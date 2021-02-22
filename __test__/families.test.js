@@ -116,6 +116,48 @@ describe('Families', () => {
     });
   });
 
+  describe('GET /families/user/:userId success', () => {
+    test('should send response with 200 status code', async(done) => {
+
+      await request(app)
+        .get(`/families/user/2`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(200);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('id');
+          expect(typeof body.id).toEqual('number');
+          expect(body).toHaveProperty('name');
+          expect(body).toHaveProperty('address');
+          expect(body).toHaveProperty('gender');
+          expect(body).toHaveProperty('contact');
+          expect(body).toHaveProperty('userId');
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
+  describe('GET /families/user/:userId fail', () => {
+    test('not found id should send response with 404 status code', (done) => {
+
+      request(app)
+        .get(`/families/user/9999999`)
+        .set('access_token', tokenAdmin)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(404);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(typeof body.errors).toEqual('string');
+          expect(body.errors).toEqual('not found!');
+          done();
+        }).catch(err => done(err));
+    });
+  });
+
   describe('POST /families success', () => {
     test('should send response with 201 status code', (done) => {
       const input = {
