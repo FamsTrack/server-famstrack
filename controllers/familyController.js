@@ -1,4 +1,4 @@
-const { Family, User, Client, Group, ClientGroup } = require("../models");
+const { Family, User, Client, Group, Schedule, Device, History } = require("../models");
 
 class FamilyController {
   static async getAll(req, res, next) {
@@ -30,12 +30,25 @@ class FamilyController {
           model: Client,
           as: 'client',
           attributes: { exclude: ['createdAt', 'updatedAt'] },
-          include: {
-            model: Group,
-            as: 'group'
-          }
+          include: [{
+              model: Group,
+              as: 'group',
+              include: {
+                model: Schedule,
+                as: 'schedule'
+              }
+            },
+            {
+              model: Device,
+              as: 'device'
+            }, {
+              model: History,
+              as: 'history'
+            }
+          ]
         }]
       });
+
       if (!family) return next({ name: 'notFound' });
 
       return res.status(200).json(family);

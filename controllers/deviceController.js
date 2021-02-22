@@ -1,4 +1,5 @@
-const { Client, Device } = require('../models');
+const { Client, Device, History } = require('../models');
+const io = require('../socketConfig');
 
 class DeviceController {
   static async getAll(req, res, next) {
@@ -33,6 +34,9 @@ class DeviceController {
         if (!client) return next({ name: 'notFound' });
       }
 
+      const deviceUnique = await Device.findOne({ where: { arduinoUniqueKey } });
+      if (deviceUnique) return next({ name: 'deviceUnique' })
+
       const device = await Device.create(input);
       return res.status(201).json(device);
     } catch (error) {
@@ -48,6 +52,9 @@ class DeviceController {
 
       const device = await Device.findByPk(id);
       if (!device) return next({ name: 'notFound' });
+
+      const deviceUnique = await Device.findOne({ where: { arduinoUniqueKey } });
+      if (deviceUnique && deviceUnique.id !== +id) return next({ name: 'deviceUnique' })
 
       if (clientId) {
         const client = await Client.findByPk(clientId)
@@ -65,17 +72,26 @@ class DeviceController {
 
   static async patchDevice(req, res, next) {
     try {
-      const { id } = req.params;
-      const { longitude, latitude, panicStatus, buzzerStatus } = req.body;
-      const input = { longitude, latitude, panicStatus, buzzerStatus };
+      const { arduinoUniqueKey } = req.params;
+      const data = req.query;
 
-      const device = await Device.findByPk(id);
+      const device = await Device.findOne({
+        where:{
+          arduinoUniqueKey
+        }
+      });
+
       if (!device) return next({ name: 'notFound' });
 
-      await device.update(input, { where: { id } });
+      await device.update(input, { where: { arduinoUniqueKey } });
       await device.reload();
 
-      return res.status(200).json(device)
+      await History.create({ longitude:device.longitude, latitude:device.latitude, clientId: device.clientId, deviceId: id })
+
+      // TODO exemple using socket to broadcast to all user 
+      // io.emit('data:client', client)
+
+      return res.status(200).send(device.buzzerStatus? '1' : '0')
     } catch (error) {
       return next(error)
     }

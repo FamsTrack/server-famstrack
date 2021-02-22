@@ -1,15 +1,12 @@
 'use strict';
 module.exports = {
   up: async(queryInterface, Sequelize) => {
-    await queryInterface.createTable('Devices', {
+    await queryInterface.createTable('Histories', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      arduinoUniqueKey: {
-        type: Sequelize.STRING
       },
       longitude: {
         type: Sequelize.FLOAT
@@ -17,15 +14,14 @@ module.exports = {
       latitude: {
         type: Sequelize.FLOAT
       },
-      panicStatus: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
-      },
-      buzzerStatus: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false
+      deviceId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Devices',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       clientId: {
         type: Sequelize.INTEGER,
@@ -33,7 +29,7 @@ module.exports = {
           model: 'Clients',
           key: 'id'
         },
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
       createdAt: {
@@ -47,6 +43,6 @@ module.exports = {
     });
   },
   down: async(queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Devices');
+    await queryInterface.dropTable('Histories');
   }
 };

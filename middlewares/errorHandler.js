@@ -10,11 +10,16 @@ module.exports = (err, req, res, next) => {
 
     case "SequelizeUniqueConstraintError":
       const unique = err.errors.map(el => el.message)
-
       res.status(400).json({
         errors: unique
       })
       break;
+
+    case "deviceUnique":
+      res.status(400).json({
+        errors: ['arduinoUniqueKey must be unique']
+      })
+      break
     case "authValidate":
       res.status(401).json({
         errors: 'invalid email/password'
