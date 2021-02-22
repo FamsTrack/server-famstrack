@@ -294,14 +294,15 @@ describe('PUT /news/:id success', () => {
         expect(typeof body).toEqual('object')
         expect(body).toHaveProperty('id', expect.any(Number))
         expect(body).toHaveProperty('name', updatedNews.name)
-        expect(body).toHaveProperty('year', updatedNews.year)
+        expect(body).toHaveProperty('image', updatedNews.image)
+        expect(body).toHaveProperty('description', updatedNews.description)
         done()
       })
       .catch(err => done(err))
   })
 })
 
-describe('PUT /groups fail', () => {
+describe('PUT /news fail', () => {
   test('PUT fail name, image and description should send response 400 status code', (done) => {
     const input = {
       name: '',
@@ -468,6 +469,111 @@ describe('PUT /groups fail', () => {
   })
 })
 
+// PATCH
+
+describe('PATCH /news/:id success', () => {
+  const updatedNews = {
+    active: false
+  }
+
+  test('PATCH news send response 200 status code', (done) => {
+    request(app)
+      .patch(`/news/${newsId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send(updatedNews)
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(200)
+        expect(typeof body).toEqual('object')
+        expect(body).toHaveProperty('id', expect.any(Number))
+        expect(body).toHaveProperty('name', expect.any(String))
+        expect(body).toHaveProperty('image', expect.any(String))
+        expect(body).toHaveProperty('description', expect.any(String))
+        expect(body).toHaveProperty('status', updatedNews.status)
+        done()
+      })
+      .catch(err => done(err))
+  })
+})
+
+describe('PUT /news fail', () => {
+  test('PUT fail active field empty should send response 400 status code', (done) => {
+    request(app)
+      .patch(`/news/${newsId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({active: ''})
+      .then(response => {
+        const { body, statusCode } = response
+        // console.log('<<<<<<<<<<HAHAHAHAHA', body);
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['field active is required'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('PUT fail no token 500 status code', (done) => {
+    request(app)
+      .patch(`/news/${newsId}`)
+      .set('Accept', 'application/json')
+      .send({active: false })
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(500);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(typeof body.errors).toEqual('string');
+        expect(body.errors).toEqual('jwt must be provided');
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('PUT fail send token but not admin 401 status code', (done) => {
+    request(app)
+      .patch(`/news/${newsId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenFamily)
+      .send({active: false })
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(401);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors', 'unauthorize action!');
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('news id not in database should send response 404 status code', (done) => {
+    request(app)
+      .patch('/news/9999')
+      .set('access_token', tokenAdmin)
+      .send({active: false })
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(404)
+        expect(typeof body).toEqual('object')
+        expect(body).toHaveProperty('errors')
+        expect(typeof body.errors).toEqual('string')
+        expect(body.errors).toEqual('not found!')
+
+        done();
+      })
+      .catch(err => done(err))
+  })
+})
 // DELETE
 
 describe('DELETE /news/:id success', () => {

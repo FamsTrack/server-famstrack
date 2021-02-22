@@ -20,7 +20,13 @@ class NewsController {
 
   static async getAll(req, res, next) {
     try {
-      const newsData = await News.findAll({ where: { active: true } })
+      // console.log(req.user);
+      let newsData
+      if (req.user.role === 'admin') {
+        newsData = await News.findAll({ order: [['id']]} )
+      } else {
+        newsData = await News.findAll({ order: [['id']], where: { active: true } })
+      }
 
       return res.status(200).json(newsData)
     } catch (err) {
