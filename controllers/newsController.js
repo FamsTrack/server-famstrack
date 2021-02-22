@@ -62,6 +62,26 @@ class NewsController {
     }
   }
 
+  static async patch(req, res, next) {
+    try {
+      const { id } = req.params
+      const { active } = req.body
+      const input = {
+        active
+      }
+
+      const news = await News.findByPk(id)
+
+      if (!news) return next({ name: 'notFound' })
+      await news.update(input, { where: { id } })
+      await news.reload()
+
+      res.status(200).json(news)
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   static async delete(req, res, next) {
     try {
       const id = +req.params.id
