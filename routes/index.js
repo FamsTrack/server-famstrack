@@ -10,8 +10,8 @@ const deviceRouter = require('./device')
 const deviceController = require('../controllers/deviceController');
 
 
-router.use(authRouter)
 router.get('/devices/:arduinoUniqueKey', deviceController.patchDevice);
+router.use(authRouter)
 router.use(isLogin)
 router.use('/devices', deviceRouter)
 router.use('/news', newsRouter)
