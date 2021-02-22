@@ -147,6 +147,7 @@ describe('Client', () => {
     });
   });
 
+
   describe('POST /clients success', () => {
     test('should send response with 201 status code', (done) => {
       const input = {
