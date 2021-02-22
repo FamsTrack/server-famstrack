@@ -1,9 +1,27 @@
-const { Client, Family } = require('../models');
-
+const { Client, Family, History, Device, Schedule, Group } = require('../models');
+const { Cloudinary } = require('../helpers/uploadCloudinary')
 class clientController {
   static async getAll(req, res, next) {
     try {
-      const client = await Client.findAll();
+      const client = await Client.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include: [{
+            model: Group,
+            as: 'group',
+            include: {
+              model: Schedule,
+              as: 'schedule'
+            }
+          },
+          {
+            model: Device,
+            as: 'device'
+          }, {
+            model: History,
+            as: 'history'
+          }
+        ]
+      });
 
       return res.status(200).json(client);
     } catch (error) {
@@ -27,12 +45,19 @@ class clientController {
   static async store(req, res, next) {
     try {
       const { name, img, address, gender, contact, birth_date, familiesId, groupId } = req.body;
-      const input = { name, img, address, gender, contact, birth_date, familiesId, groupId };
+      let imgClient = img;
 
       if (familiesId) {
         const family = await Family.findByPk(familiesId)
         if (!family) return next({ name: 'notFound' });
       }
+
+      if (img) {
+        const uploadResponse = await Cloudinary.uploader.upload(img)
+        imgClient = uploadResponse.url
+      }
+
+      const input = { name, img: imgClient, address, gender, contact, birth_date, familiesId, groupId };
 
       const client = await Client.create(input);
       return res.status(201).json(client);

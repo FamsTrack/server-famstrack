@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Client.belongsTo(models.Family, { as: 'family', foreignKey: 'familiesId' })
       Client.belongsTo(models.Group, { as: 'group', foreignKey: 'groupId' })
       Client.hasOne(models.Device, { as: 'device', foreignKey: 'clientId' })
+      Client.hasMany(models.History, { as: 'history', foreignKey: 'clientId' })
     }
   };
   Client.init({
