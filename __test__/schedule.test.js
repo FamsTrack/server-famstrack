@@ -107,9 +107,10 @@ describe('POST /groups/:id/schedule fail', () => {
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: '', date: input.date, time: input.time, description: input.description })
+      .send({ name: '', date: input.date, time: '18:01', description: input.description })
       .then(response => {
         const { body, statusCode } = response
+        console.log('<<<<<<<>>>>>>>>>', body);
 
         expect(statusCode).toEqual(400);
         expect(typeof body).toEqual('object');
@@ -149,7 +150,28 @@ describe('POST /groups/:id/schedule fail', () => {
       .post(`/groups/${groupId}/schedule`)
       .set('Accept', 'application/json')
       .set('access_token', tokenAdmin)
-      .send({ name: input.name, date: input.date, time: input.time, description: '' })
+      .send({ name: input.name, date: input.date, time: '18:01', description: '' })
+      .then(response => {
+        const { body, statusCode } = response
+        console.log('<<<<<<<>>>>>>>>>', body);
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['field description is required'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('create fail wrong date format should send response 400 status code', (done) => {
+    request(app)
+      .post(`/groups/${groupId}/schedule`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({ name: input.name, date: '21/12/2021', time: input.time, description: input.description})
       .then(response => {
         const { body, statusCode } = response
 
@@ -158,8 +180,54 @@ describe('POST /groups/:id/schedule fail', () => {
         expect(body).toHaveProperty('errors');
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
-          expect.arrayContaining(['field description is required'])
+          expect.arrayContaining(['date format should be yyyy-mm-dd'])
         );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('create fail wrong time format should send response 400 status code', (done) => {
+    request(app)
+      .post(`/groups/${groupId}/schedule`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({ name: input.name, date: input.date, time: '12.59', description: input.description})
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['time format should be hh:mm'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('create fail schedule not unique should send response 400 status code', (done) => {
+    const failObj = {
+      name: 'makan',
+      description: 'makan siang',
+      date: '2021-12-21',
+      time: '12:00'
+    }
+    request(app)
+      .post(`/groups/${groupId}/schedule`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send(failObj)
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400)
+        expect(typeof body).toEqual('object')
+        expect(body).toHaveProperty('errors')
+        expect(typeof body.errors).toEqual('string')
+        expect(body.errors).toEqual('Schedule on this date and time already exist')
         done()
       })
       .catch(err => done(err))
@@ -440,6 +508,48 @@ describe('PUT /groups/:id/schedule/:schId fail', () => {
         expect(Array.isArray(body.errors)).toEqual(true);
         expect(body.errors).toEqual(
           expect.arrayContaining(['field time is required'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('PUT fail wrong date format should send response 400 status code', (done) => {
+    request(app)
+      .put(`/groups/${groupId}/schedule/${scheduleId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({ name: input.name, date: '21/12/2021', time: input.time, description: input.description})
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['date format should be yyyy-mm-dd'])
+        );
+        done()
+      })
+      .catch(err => done(err))
+  })
+
+  test('PUT fail wrong time format should send response 400 status code', (done) => {
+    request(app)
+      .put(`/groups/${groupId}/schedule/${scheduleId}`)
+      .set('Accept', 'application/json')
+      .set('access_token', tokenAdmin)
+      .send({ name: input.name, date: input.date, time: '12.59', description: input.description})
+      .then(response => {
+        const { body, statusCode } = response
+
+        expect(statusCode).toEqual(400);
+        expect(typeof body).toEqual('object');
+        expect(body).toHaveProperty('errors');
+        expect(Array.isArray(body.errors)).toEqual(true);
+        expect(body.errors).toEqual(
+          expect.arrayContaining(['time format should be hh:mm'])
         );
         done()
       })

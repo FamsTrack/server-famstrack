@@ -33,6 +33,12 @@ module.exports = (err, req, res, next) => {
       })
       break;
 
+    case "alreadyExist":
+      res.status(400).json({
+        errors: 'Schedule on this date and time already exist'
+      })
+      break;
+
     default:
       res.status(500).json({
         errors: err.message

@@ -6,11 +6,14 @@ class ScheduleController {
       const id = req.params.id
       const { name, description, date, time } = req.body
       const input = { name, description, date, time, groupId: id }
-      console.log(input);
+      
       const group = await Group.findByPk(id)
-
       if (!group) return next({ name: 'notFound' })
 
+      const scheduleData = await Schedule.findOne({where: {date, time, groupId: id}})
+
+      console.log(scheduleData);
+      if (scheduleData) return next({ name: 'alreadyExist' })
       const schedule = await Schedule.create(input)
       return res.status(201).json(schedule)
     } catch (err) {

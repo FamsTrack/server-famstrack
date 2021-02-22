@@ -18,7 +18,7 @@
     "db:seed:test": "SET NODE_ENV=test&npm run db:seed",
     "start": "node ./bin/http.js",
     "dev": "SET NODE_ENV=development&nodemon ./bin/http.js",
-    "test": "SET NODE_ENV=test&npx jest --detectOpenHandles --forceExit"
+    "test": "SET NODE_ENV=test&npx jest --detectOpenHandles --forceExit --coverage"
   },
   "repository": {
     "type": "git",
