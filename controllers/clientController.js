@@ -1,5 +1,7 @@
 const { Client, Family, History, Device, Schedule, Group } = require('../models');
 const { Cloudinary } = require('../helpers/uploadCloudinary')
+const io = require('../socketConfig');
+
 class clientController {
   static async getAll(req, res, next) {
     try {
@@ -71,7 +73,7 @@ class clientController {
     try {
       const { id } = req.params;
       const { name, img, address, gender, contact, birth_date, familiesId, groupId } = req.body;
-      const input = { name, img, address, gender, contact, birth_date, familiesId, groupId };
+      let imgClient = img;
 
       const client = await Client.findByPk(id);
       if (!client) return next({ name: 'notFound' });
@@ -80,6 +82,14 @@ class clientController {
         const family = await Family.findByPk(familiesId)
         if (!family) return next({ name: 'notFound' });
       }
+
+      if (img) {
+        const uploadResponse = await Cloudinary.uploader.upload(img)
+        imgClient = uploadResponse.url
+      }
+
+      const input = { name, img: imgClient, address, gender, contact, birth_date, familiesId, groupId };
+
 
       await client.update(input, { where: { id } });
       await client.reload();

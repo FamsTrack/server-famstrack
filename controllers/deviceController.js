@@ -1,4 +1,5 @@
 const { Client, Device, History } = require('../models');
+const io = require('../socketConfig');
 
 class DeviceController {
   static async getAll(req, res, next) {
@@ -82,6 +83,9 @@ class DeviceController {
       await device.reload();
 
       await History.create({ longitude, latitude, clientId: device.clientId, deviceId: id })
+
+      // TODO exemple using socket to broadcast to all user 
+      // io.emit('data:client', client)
 
       return res.status(200).json(device)
     } catch (error) {

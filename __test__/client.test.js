@@ -463,7 +463,7 @@ describe('Client', () => {
     test('should send response with 200 status code', (done) => {
       const input = {
         name: 'Abdul ajex',
-        img: 'http://res.cloudinary.com/dyni7r1ab/image/upload/v1613967756/hjysdypb3vlzvd5z3olo.jpg',
+        img: dummyImage,
         address: 'jln. bangauz',
         gender: 'wanita',
         contact: '082279655368',
