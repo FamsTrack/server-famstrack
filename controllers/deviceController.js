@@ -83,7 +83,7 @@ class DeviceController {
 
       if (!device) return next({ name: 'notFound' });
 
-      await device.update(input, { where: { arduinoUniqueKey } });
+      await device.update(data, { where: { arduinoUniqueKey } });
       await device.reload();
 
       await History.create({ longitude:device.longitude, latitude:device.latitude, clientId: device.clientId, deviceId: id })
