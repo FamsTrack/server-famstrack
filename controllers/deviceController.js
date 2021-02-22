@@ -75,23 +75,19 @@ class DeviceController {
       const { arduinoUniqueKey } = req.params;
       const data = req.query;
 
-      const device = await Device.findOne({
-        where:{
-          arduinoUniqueKey
-        }
-      });
+      const device = await Device.findOne({ where: { arduinoUniqueKey } });
 
       if (!device) return next({ name: 'notFound' });
 
       await device.update(input, { where: { arduinoUniqueKey } });
       await device.reload();
 
-      await History.create({ longitude:device.longitude, latitude:device.latitude, clientId: device.clientId, deviceId: id })
+      await History.create({ longitude: device.longitude, latitude: device.latitude, clientId: device.clientId, deviceId: id })
 
       // TODO exemple using socket to broadcast to all user 
       // io.emit('data:client', client)
 
-      return res.status(200).send(device.buzzerStatus? '1' : '0')
+      return res.status(200).send(device.buzzerStatus ? '1' : '0')
     } catch (error) {
       return next(error)
     }

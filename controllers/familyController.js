@@ -17,6 +17,46 @@ class FamilyController {
     }
   }
 
+  static async getByUserId(req, res, next) {
+    try {
+      const { userId } = req.params;
+
+      const family = await Family.findOne({ where: { userId } }, {
+        include: [{
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
+        }, {
+          model: Client,
+          as: 'client',
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          include: [{
+              model: Group,
+              as: 'group',
+              include: {
+                model: Schedule,
+                as: 'schedule'
+              }
+            },
+            {
+              model: Device,
+              as: 'device'
+            }, {
+              model: History,
+              as: 'history'
+            }
+          ]
+        }]
+      });
+
+      if (!family) return next({ name: 'notFound' });
+
+      return res.status(200).json(family);
+    } catch (error) {
+      return next(error)
+    }
+  }
+
   static async get(req, res, next) {
     try {
       const { id } = req.params;
