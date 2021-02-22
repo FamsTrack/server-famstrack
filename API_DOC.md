@@ -601,23 +601,895 @@ not needed
 
 _Response (200 - OK)_
 ```json
+[
+  {
+    "name": "<string>",
+    "address": "<string>",
+    "gender": "<string>",
+    "contact": "<string>",
+    "serId": "<snteger>"
+  }
+]
+```
+
+_Response (401 - unauthorized)_
+```json
 {
-  "message": "successfully delete device"
+  "errors": "unauthorize action!"
 }
 ```
 
-_Response (400 - bad Request)_
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### GET /families:id
+> get families data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "name": "<string>",
+  "address": "<string>",
+  "gender": "<string>",
+  "contact": "<string>",
+  "serId": "<snteger>"
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### POST /families
+> register new family
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "address": "<string>",
+  "gender": "<string>",
+  "contact": "<string>",
+  "serId": "<snteger>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "address": "<string>",
+  "gender": "<string>",
+  "contact": "<string>",
+  "serId": "<snteger>"
+}
+```
+
+_Request (400 - Bad Request)_
 ```json
 {
   "errors": [
-    "field longitude is required",
-    "field latitude is required",
-    "field panicStatus is required",
-    "field buzzerStatus is required",
-    "field arduino unique key is required",
-    "field longitude must float",
-    "field latitude must float",
-    "arduinoUniqueKey must be unique"
+    "field name is required",
+    "field address is required",
+    "field password is required",
+    "gender should be one of pria or wanita",
+    "field contact is required",
+    "field user id is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### PUT /families/:id
+> update families data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "address": "<string>",
+  "gender": "<string>",
+  "contact": "<string>",
+  "serId": "<snteger>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "address": "<string>",
+  "gender": "<string>",
+  "contact": "<string>",
+  "serId": "<snteger>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field address is required",
+    "field password is required",
+    "gender should be one of pria or wanita",
+    "field contact is required",
+    "field user id is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### DELETE /families/:id
+> delete families data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "message": "successfully delete family"
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### GET /groups
+> get all groups data
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+[
+  {
+    "name": "<string>",
+    "year": "<integer>"
+  }
+]
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### GET /groups/:id
+> get group data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "year": "<integer>"
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### POST /groups
+> register new group
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "year": "<integer>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "year": "<snteger>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field year is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### PUT /groups/:id
+> update group data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "address": "<string>",
+  "year": "<snteger>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "year": "<snteger>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field year is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### DELETE /groups/:id
+> delete groups data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "message": "successfully delete family"
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### GET /news
+> get all news data
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+[
+  {
+    "id": "<integer>",
+    "name": "<string>",
+    "image": "<string>",
+    "description": "<text>",
+    "active": "<boolean>"
+  }
+]
+```
+
+### GET /news/:id
+> get news data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "image": "<string>",
+  "description": "<text>",
+  "active": "<boolean>"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+### POST /news
+> store new news
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "image": "<string>",
+  "description": "<text>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "image": "<string>",
+  "description": "<text>",
+  "active": "<boolean>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field image is required",
+    "field description is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### PUT /news/:id
+> update news
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "image": "<string>",
+  "description": "<text>",
+  "active": "<boolean>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "image": "<string>",
+  "description": "<text>",
+  "active": "<boolean>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field image is required",
+    "field description is required",
+    "field active is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### DELETE /news/:id
+> delete news data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+{
+  "message": "successfully delete family"
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### GET /groups/:id/schedule
+> get all schedule data by group id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```
+not needed
+```
+
+_Response (200 - OK)_
+```json
+[
+  {
+    "id": "<integer>",
+    "name": "<string>",
+    "description": "<string>",
+    "date": "<string>",
+    "time": "<string>",
+    "groupId": "<integer>",
+    "createdAt": "<date>",
+    "updatedAt": "<date>"
+  }
+]
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+### POST /groups/:id/schedule
+> store new schedule data to group id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "description": "<string>",
+  "date": "<string>",
+  "time": "<string>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "description": "<string>",
+  "date": "<string>",
+  "time": "<string>",
+  "groupId": "<integer>",
+  "createdAt": "<date>",
+  "updatedAt": "<date>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field image is required",
+    "field description is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### PUT /groups/:id/schedule/:schid
+> update schedule data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+{
+  "name": "<string>",
+  "description": "<string>",
+  "date": "<string>",
+  "time": "<string>"
+}
+```
+
+_Response (200 - OK)_
+```json
+{
+  "id": "<integer>",
+  "name": "<string>",
+  "description": "<string>",
+  "date": "<string>",
+  "time": "<string>",
+  "groupId": "<integer>",
+  "createdAt": "<date>",
+  "updatedAt": "<date>"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field image is required",
+    "field description is required"
+  ]
+}
+```
+
+_Response (401 - unauthorized)_
+```json
+{
+  "errors": "unauthorize action!"
+}
+```
+
+_Response (404 - Not Found)_
+```json
+{
+  "errors": "not found!"
+}
+```
+
+_Response (500 - jwt)_
+```json
+{
+  "errors": "jwt must be provided"
+}
+```
+
+### DELETE /groups/:id/schedule/:schid
+> update schedule data by id
+
+_Request Header_
+```json
+{
+  "access_token": "<string>"
+}
+```
+
+_Request Body_
+```json
+not neede
+```
+
+_Response (200 - OK)_
+```json
+{
+  "message": "successfully delete schedule"
+}
+```
+
+_Request (400 - Bad Request)_
+```json
+{
+  "errors": [
+    "field name is required",
+    "field image is required",
+    "field description is required"
   ]
 }
 ```
