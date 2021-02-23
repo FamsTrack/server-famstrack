@@ -33,6 +33,29 @@ class AuthController {
     }
   }
 
+  static async loginWeb(req, res, next) {
+    try {
+      const { email, password } = req.body
+
+      const user = await User.findOne({ where: { email } });
+      if (!user) next({ name: 'authValidate' });
+      if (user.role !== 'admin') next({ name: 'onlyAdmin' })
+
+      const checkPassword = comparePassword(password, user.password);
+      if (!checkPassword) return next({ name: 'authValidate' });
+
+      const payload = {
+        id: user.id,
+        email: user.email,
+        role: user.role
+      }
+      const access_token = generateToken(payload);
+      return res.status(200).json({ access_token });
+    } catch (err) {
+      next(err)
+    }
+  }
+
   static async register(req, res, next) {
     try {
       const { email, password, role } = req.body;
