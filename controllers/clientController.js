@@ -35,7 +35,25 @@ class clientController {
     try {
       const { id } = req.params;
 
-      const client = await Client.findByPk(id);
+      const client = await Client.findByPk(id, {
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include: [{
+            model: Group,
+            as: 'group',
+            include: {
+              model: Schedule,
+              as: 'schedule'
+            }
+          },
+          {
+            model: Device,
+            as: 'device'
+          }, {
+            model: History,
+            as: 'history'
+          }
+        ]
+      });
       if (!client) return next({ name: 'notFound' });
 
       return res.status(200).json(client);

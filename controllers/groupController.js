@@ -19,7 +19,7 @@ class GroupController {
 
   static async getAll(req, res, next) {
     try {
-      const group = await Group.findAll()
+      const group = await Group.findAll({ include: 'client' })
 
       return res.status(200).json(group)
     } catch (err) {
@@ -30,7 +30,7 @@ class GroupController {
   static async getId(req, res, next) {
     try {
       const id = req.params.id
-      const group = await Group.findByPk(id)
+      const group = await Group.findByPk(id, { include: 'client' })
 
       if (!group) return next({ name: 'notFound' })
       return res.status(200).json(group)
