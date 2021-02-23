@@ -1,4 +1,4 @@
-const { Client, Device, History } = require('../models');
+const { Client, Device, History, Family, User } = require('../models');
 const io = require('../socketConfig');
 const axios = require('axios')
 
@@ -6,6 +6,7 @@ class DeviceController {
   static async getAll(req, res, next) {
     try {
       const device = await Device.findAll();
+
       return res.status(200).json(device);
     } catch (error) {
       return next(error)
@@ -85,10 +86,24 @@ class DeviceController {
 
       await History.create({ longitude: device.longitude, latitude: device.latitude, clientId: device.clientId, deviceId: device.id })
 
-      const positionDevice = await Device.findAll();
+      if (device.panicStatus) {
+        const searchToken = await Client.findOne({
+          where: { id: device.clientId },
+          include: {
+            model: Family,
+            as: 'family',
+            include: {
+              model: User,
+              as: 'user'
+            }
+          }
+        })
+
+        console.log(searchToken.family.user);
+      }
 
       // TODO exemple using socket to broadcast to all user 
-      io.emit('data:device', positionDevice)
+      io.emit('data:device', device)
 
       return res.status(200).send(device.buzzerStatus ? '1' : '0')
     } catch (error) {
