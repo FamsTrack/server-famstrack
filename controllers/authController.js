@@ -42,6 +42,42 @@ class AuthController {
       return next(error)
     }
   }
+
+  static async getAll(req, res, next) {
+    try {
+      let usersData
+
+      if (req.user.role === 'admin') {
+        usersData = await User.findAll({order: [['id']]})
+      } else {
+        return next({name: 'unauthorize'})
+      }
+
+      res.status(200).json(usersData)
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async delete(req, res, next) {
+    try {
+      const { id } = req.params
+      let user
+      console.log(id);
+
+      if (req.user.role === 'admin') {
+        user = await User.findByPk(id)
+        if (!user) return next({name: 'notFound'})
+      } else {
+        return next({name: 'unauthorize'})
+      }
+
+      await user.destroy()
+      res.status(200).json({message: 'successfully delete user'})
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = AuthController;

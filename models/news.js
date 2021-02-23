@@ -39,7 +39,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     active: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          msg: 'field active is required'
+        }
+      }
     }
   }, {
     sequelize,

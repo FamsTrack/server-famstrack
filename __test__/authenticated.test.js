@@ -9,7 +9,7 @@ describe('Authenticate', () => {
       await clearUser();
       await sequelize.close();
       done();
-    } catch (error) {
+    } catch (err) {
       done(err)
     }
   });
@@ -21,7 +21,7 @@ describe('Authenticate', () => {
       password: '123123',
       role: 'family'
     }
-    test('Register family should send response 201 status code', (done) => {
+    test('Register user should send response 201 status code', (done) => {
       request(app)
         .post('/register')
         .set('Accept', 'application/json')
