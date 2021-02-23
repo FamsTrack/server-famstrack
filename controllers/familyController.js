@@ -21,7 +21,8 @@ class FamilyController {
     try {
       const { id } = req.user;
 
-      const family = await Family.findOne({ where: { userId: id } }, {
+      const family = await Family.findOne({
+        where: { userId: id },
         include: [{
           model: User,
           as: 'user',
