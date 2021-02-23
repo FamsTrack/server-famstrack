@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     active: {
-      type: DataTypes.STRING,
+      type: DataTypes.BOOLEAN,
       validate: {
         notEmpty: {
           msg: 'field active is required'

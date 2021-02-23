@@ -243,4 +243,78 @@ describe('Authenticate', () => {
         .catch(err => done(err))
     })
   })
+
+  describe('POST /weblogin succes', () => {
+    const validObj = {
+      email: 'admin@famtrack.com',
+      password: 'qwerty'
+    }
+    test('weblogin succes should send response 200 status code', (done) => {
+      request(app)
+        .post('/weblogin')
+        .set('Accept', 'application/json')
+        .send(validObj)
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toBe(200)
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('access_token', expect.any(String))
+          done()
+        })
+        .catch(err => done(err))
+    })
+  })
+
+  describe('POST /weblogin Fail', () => {
+    test('weblogin fail no email in database should send response 401', (done) => {
+      request(app)
+        .post('/weblogin')
+        .set('Accept', 'application/json')
+        .send({ email: 'lalala@mail.com', password: 'qwerty' })
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toBe(401)
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(body).toHaveProperty('errors', 'invalid email/password')
+          done()
+        })
+        .catch(err => done(err))
+    })
+
+    test('weblogin fail wrong password should send response 401', (done) => {
+      request(app)
+        .post('/weblogin')
+        .set('Accept', 'application/json')
+        .send({ email: 'pevitapearce@famtrack.com', password: 'qwerty' })
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toEqual(401);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(body).toHaveProperty('errors', 'only admin can login here');
+          done()
+        })
+        .catch(err => done(err))
+    })
+    test('weblogin fail not input email and password should send response 401', (done) => {
+      request(app)
+        .post('/weblogin')
+        .set('Accept', 'application/json')
+        .send({ email: '', password: '' })
+        .then(response => {
+          const { body, statusCode } = response
+
+          expect(statusCode).toBe(401);
+          expect(typeof body).toEqual('object');
+          expect(body).toHaveProperty('errors');
+          expect(body).toHaveProperty('errors', 'invalid email/password');
+          done()
+        })
+        .catch(err => done(err))
+    })
+  })
 })

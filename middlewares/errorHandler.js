@@ -20,6 +20,13 @@ module.exports = (err, req, res, next) => {
         errors: ['arduinoUniqueKey must be unique']
       })
       break
+
+    case "onlyAdmin":
+      res.status(401).json({
+        errors: 'only admin can login here'
+      })
+      break
+      
     case "authValidate":
       res.status(401).json({
         errors: 'invalid email/password'

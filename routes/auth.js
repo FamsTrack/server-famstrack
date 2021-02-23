@@ -4,6 +4,7 @@ const isLogin = require('../middlewares/isLogin')
 const isAdmin = require('../middlewares/isAdmin')
 
 router.post('/login', authController.login);
+router.post('/weblogin', authController.loginWeb)
 router.post('/register', authController.register);
 
 router.use(isLogin)

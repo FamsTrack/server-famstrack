@@ -39,7 +39,6 @@ beforeAll(async(done) => {
     .send(user)
 
   id = users.body.id
-  console.log('<<<<<<< HAHAHAHHA', users);
   done();
 })
 
