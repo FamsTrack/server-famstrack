@@ -9,7 +9,6 @@ const scheduleRouter = require('./schedule')
 const deviceRouter = require('./device')
 const deviceController = require('../controllers/deviceController');
 
-
 router.get('/devices/:arduinoUniqueKey/key', deviceController.patchDevice);
 router.use(authRouter)
 router.use(isLogin)
