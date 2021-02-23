@@ -52,7 +52,8 @@ module.exports = (sequelize, DataTypes) => {
           msg: "role should be one of admin or family"
         }
       }
-    }
+    },
+    pushToken: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',
