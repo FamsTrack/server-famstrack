@@ -3,7 +3,7 @@ const app = require('../app')
 const { sequelize } = require('../models')
 const clearDevice = require('./helpers/clear-device')
 
-let tokenAdmin, tokenFamily, deviceId;
+let tokenAdmin, tokenFamily, deviceId, arduinoUniqueKey;
 
 describe('Devices', () => {
 
@@ -33,7 +33,7 @@ describe('Devices', () => {
 
     tokenAdmin = admins.body.access_token;
 
-    await request(app)
+    const arduinoDummy = await request(app)
       .post('/devices')
       .set('access_token', tokenAdmin)
       .send(newDevice)
@@ -43,6 +43,7 @@ describe('Devices', () => {
       .send(family)
 
     tokenFamily = families.body.access_token;
+    arduinoUniqueKey = arduinoDummy.body.arduinoUniqueKey
 
     done();
   })
@@ -450,34 +451,21 @@ describe('Devices', () => {
     })
   })
 
-  // describe('PATCH /device success', () => {
-  //   const newDevice = {
-  //     longitude: 110.371755,
-  //     latitude: -7.795425,
-  //     panicStatus: true,
-  //     buzzerStatus: true,
-  //   }
-  //   test('should send response with 201 status code', (done) => {
-  //     request(app)
-  //       .patch(`/devices/${deviceId}`)
-  //       .set('Accept', 'application/json')
-  //       .set('access_token', tokenAdmin)
-  //       .send(newDevice)
-  //       .then(response => {
-  //         const { body, statusCode } = response
+  describe('PATCH /device success', () => {
+    test('should send response with 200 status code', (done) => {
+      request(app)
+        .get(`/devices/${arduinoUniqueKey}/key?latitude=221.1111122&longitude=22111.111111`)
+        .set('Accept', 'application/json')
+        .then(response => {
+          const { statusCode } = response
 
-  //         expect(statusCode).toBe(200)
-  //         expect(body).toHaveProperty('id', expect.any(Number))
-  //         expect(body).toHaveProperty('longitude', newDevice.longitude)
-  //         expect(body).toHaveProperty('latitude', newDevice.latitude)
-  //         expect(body).toHaveProperty('panicStatus', newDevice.panicStatus)
-  //         expect(body).toHaveProperty('buzzerStatus', newDevice.buzzerStatus)
+          expect(statusCode).toBe(200)
 
-  //         done()
-  //       })
-  //       .catch(err => done(err))
-  //   })
-  // })
+          done()
+        })
+        .catch(err => done(err))
+    })
+  })
 
   // describe('PATCH /devices fail', () => {
   //   test('update devices fail longitude, latitude, panicStatus, buzzerStatus empty should send response 400 status code', (done) => {
