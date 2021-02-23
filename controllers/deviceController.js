@@ -84,8 +84,10 @@ class DeviceController {
 
       await History.create({ longitude: device.longitude, latitude: device.latitude, clientId: device.clientId, deviceId: device.id })
 
+      const positionDevice = await Device.findAll();
+
       // TODO exemple using socket to broadcast to all user 
-      // io.emit('data:client', client)
+      io.emit('data:device', positionDevice)
 
       return res.status(200).send(device.buzzerStatus ? '1' : '0')
     } catch (error) {
