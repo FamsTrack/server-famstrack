@@ -116,12 +116,12 @@ describe('Families', () => {
     });
   });
 
-  describe('GET /families/user/:userId success', () => {
+  describe('GET /families/user success', () => {
     test('should send response with 200 status code', async(done) => {
 
       await request(app)
-        .get(`/families/user/2`)
-        .set('access_token', tokenAdmin)
+        .get(`/families/user`)
+        .set('access_token', tokenFamily)
         .then(response => {
           const { body, statusCode } = response
 
@@ -139,11 +139,11 @@ describe('Families', () => {
     });
   });
 
-  describe('GET /families/user/:userId fail', () => {
+  describe('GET /families/user fail', () => {
     test('not found id should send response with 404 status code', (done) => {
 
       request(app)
-        .get(`/families/user/9999999`)
+        .get(`/families/user`)
         .set('access_token', tokenAdmin)
         .then(response => {
           const { body, statusCode } = response

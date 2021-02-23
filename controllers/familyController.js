@@ -19,9 +19,9 @@ class FamilyController {
 
   static async getByUserId(req, res, next) {
     try {
-      const { userId } = req.params;
+      const { id } = req.user;
 
-      const family = await Family.findOne({ where: { userId } }, {
+      const family = await Family.findOne({ where: { userId: id } }, {
         include: [{
           model: User,
           as: 'user',
