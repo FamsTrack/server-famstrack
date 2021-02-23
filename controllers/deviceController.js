@@ -1,6 +1,6 @@
 const { Client, Device, History, Family, User } = require('../models');
 const io = require('../socketConfig');
-const axios = require('axios').default
+const axios = require('axios')
 
 class DeviceController {
   static async getAll(req, res, next) {
@@ -98,24 +98,24 @@ class DeviceController {
             }
           }
         })
-        
+
         // SEND PUSH NOTIF TO FAMILY
         axios({
-          method: 'POST',
-          url: 'https://exp.host/--/api/v2/push/send',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: {
-            to: searchToken.family.user.pushToken,
-            title: `${searchToken.name} pressed the panic button`,
-            body: 'please dont be panic, we will investigate the situation'
-          }
-        })
-        .then(response => {
-          console.log(response.data);
-        })
-        .catch(err => console.log(err))
+            method: 'POST',
+            url: 'https://exp.host/--/api/v2/push/send',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: {
+              to: searchToken.family.user.pushToken,
+              title: `${searchToken.name} pressed the panic button`,
+              body: 'please dont be panic, we will investigate the situation'
+            }
+          })
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(err => console.log(err))
       }
 
       // TODO exemple using socket to broadcast to all user 

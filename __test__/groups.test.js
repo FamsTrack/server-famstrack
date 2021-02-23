@@ -237,13 +237,11 @@ describe('GET /groups/:id success', () => {
         const { body, statusCode } = response
 
         expect(statusCode).toEqual(200)
-        expect(body).toEqual({
-          id: expect.any(Number),
-          name: newGroup.name,
-          year: newGroup.year,
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String)
-        })
+        expect(typeof body).toEqual('object')
+        expect(body).toHaveProperty('id', expect.any(Number))
+        expect(body).toHaveProperty('name', newGroup.name)
+        expect(body).toHaveProperty('year', newGroup.year)
+        expect(Array.isArray(body.client)).toEqual(true);
         done()
       })
       .catch(err => done(err))
