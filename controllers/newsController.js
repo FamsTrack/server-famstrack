@@ -23,9 +23,18 @@ class NewsController {
       // console.log(req.user);
       let newsData
       if (req.user.role === 'admin') {
-        newsData = await News.findAll({ order: [['id']]} )
+        newsData = await News.findAll({
+          order: [
+            ['id']
+          ]
+        })
       } else {
-        newsData = await News.findAll({ order: [['id']], where: { active: true } })
+        newsData = await News.findAll({
+          order: [
+            ['id']
+          ],
+          where: { active: true }
+        })
       }
 
       return res.status(200).json(newsData)
@@ -72,19 +81,17 @@ class NewsController {
     try {
       const { id } = req.params
       const { active } = req.body
-      const input = {
-        active
-      }
+      const input = { active }
 
       const news = await News.findByPk(id)
-
       if (!news) return next({ name: 'notFound' })
+
       await news.update(input, { where: { id } })
       await news.reload()
 
       res.status(200).json(news)
     } catch (err) {
-      console.log(err);
+      return next(err)
     }
   }
 
