@@ -5,7 +5,10 @@ const generateToken = require('../helpers/generateToken');
 class AuthController {
   static async login(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, pushToken } = req.body;
+      const input = {
+        pushToken
+      }
 
       const user = await User.findOne({ where: { email } });
       if (!user) next({ name: 'authValidate' });
@@ -19,6 +22,10 @@ class AuthController {
         role: user.role
       }
       const access_token = generateToken(payload);
+
+      // SET PUSHTOKEN
+      await user.update(input, { where: { email } })
+      await user.reload()
 
       return res.status(200).json({ access_token });
     } catch (error) {
