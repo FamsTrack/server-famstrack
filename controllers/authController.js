@@ -27,7 +27,7 @@ class AuthController {
       await user.update(input, { where: { email } })
       await user.reload()
 
-      return res.status(200).json({ access_token });
+      return res.status(200).json({ access_token, role: user.role });
     } catch (error) {
       return next(error);
     }
