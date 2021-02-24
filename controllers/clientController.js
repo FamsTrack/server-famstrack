@@ -79,8 +79,6 @@ class clientController {
 
       const input = { name, img: imgClient, address, gender, contact, birth_date, familiesId, groupId };
 
-      console.log(input);
-
       const client = await Client.create(input);
       return res.status(201).json(client);
 

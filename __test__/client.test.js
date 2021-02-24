@@ -461,7 +461,7 @@ describe('Client', () => {
     test('should send response with 200 status code', (done) => {
       const input = {
         name: 'Abdul ajex',
-        img: '',
+        img: dummyImage,
         address: 'jln. bangauz',
         gender: 'wanita',
         contact: '082279655368',
