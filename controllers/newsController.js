@@ -1,15 +1,18 @@
 const { News } = require('../models')
+const { Cloudinary } = require('../helpers/uploadCloudinary')
 
 class NewsController {
   static async add(req, res, next) {
     try {
       const { name, image, description } = req.body
-      const input = {
-        name,
-        image,
-        description,
-        active: true
+      let imgNews = image;
+
+      if (image) {
+        const uploadResponse = await Cloudinary.uploader.upload(image)
+        imgNews = uploadResponse.url
       }
+
+      const input = { name, image: imgNews, description, active: true }
 
       const newNews = await News.create(input)
       return res.status(201).json(newNews)
