@@ -99,25 +99,23 @@ class DeviceController {
             }
           }
         })
-        const admin = await User.findOne({
-          where: {role: 'admin'}
-        })
+        const admin = await User.findOne({ where: { role: 'admin' } })
 
         // SEND PUSH NOTIF TO ADMIN 
         axios({
-          method: 'POST',
-          url: 'https://exp.host/--/api/v2/push/send',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: {
-            to: admin.pushToken,
-            title: 'Someone pressed the panic button',
-            body: `${searchToken.name}, id ${searchToken.id} pressed the panic button. Investigate his/her situation as soon as posible!`
-          }
-        })
-        .then(response => console.log(response.data))
-        .catch(err => console.log(err))
+            method: 'POST',
+            url: 'https://exp.host/--/api/v2/push/send',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: {
+              to: admin.pushToken,
+              title: 'Someone pressed the panic button',
+              body: `${searchToken.name}, id ${searchToken.id} pressed the panic button. Investigate his/her situation as soon as posible!`
+            }
+          })
+          .then(response => console.log(response.data))
+          .catch(err => console.log(err))
 
         // SEND PUSH NOTIF TO FAMILY
         axios({
@@ -137,12 +135,12 @@ class DeviceController {
       }
 
       // SET BUZZERSTATUS BACK TO FALSE
-      if (device.buzzerStatus) {
-        setTimeout(async() => {
-          await device.update({ buzzerStatus: false }, { where: { arduinoUniqueKey } });
-          await device.reload();
-        }, 5000)
-      }
+      // if (device.buzzerStatus) {
+      //   setTimeout(async() => {
+      //     await device.update({ buzzerStatus: false }, { where: { arduinoUniqueKey } });
+      //     await device.reload();
+      //   }, 5000)
+      // }
 
       // TODO exemple using socket to broadcast to all user 
       io.emit('data:device', device)
