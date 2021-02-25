@@ -1,7 +1,6 @@
 const { Client, Device, History, Family, User } = require('../models');
 const io = require('../socketConfig');
 const axios = require('axios');
-const { response } = require('express');
 
 class DeviceController {
   static async getAll(req, res, next) {
