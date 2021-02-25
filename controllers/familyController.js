@@ -8,7 +8,7 @@ class FamilyController {
           model: User,
           as: 'user',
           attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
-        }, , {
+        }, {
           model: Client,
           as: 'client',
           attributes: { exclude: ['createdAt', 'updatedAt'] },
